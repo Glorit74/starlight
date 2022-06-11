@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
-const auth = require("./middlewares/auth");
+// const mongoose = require("mongoose");
+// const auth = require("./middlewares/auth");
 const morgan = require("morgan");
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -16,10 +16,10 @@ app.use(
 );
 app.use(express.json());
 
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms")
-);
+app.use(morgan(":method :url :status - :response-time ms"));
 
 app.use("/api/user", userRoutes);
+
 app.use(errorHandler);
+
 module.exports = app;
