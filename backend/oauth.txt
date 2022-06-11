@@ -4,7 +4,7 @@ cloud platform:
 projectID=starlight-353020
 Project number=806136419820
 
-https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=817290401795-d6ds6ronnut9djcamv7mu1dakheeefr3.apps.googleusercontent.com&scope=openid%20email&redirect_uri=http://localhost:3000/callback
+https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=806136419820-ne2p17i3tjap5h3rc1r6a0gf88sm3gjm.apps.googleusercontent.com&scope=openid%20email&redirect_uri=http://localhost:3000/callback
 
 
 
