@@ -11,10 +11,10 @@ router.post("/login", auth({ block: false }), async (req, res) => {
 
   const code = payload.code;
   const provider = payload.provider;
-  if (!(code && provider)) return res.status(400).send("All inputs required 2");
+  if (!code || !provider) return res.status(400).send("All inputs required 2");
   if (!Object.keys(config.auth).includes(provider))
     return res.status(400).send("Wrong payload!");
-  console.log("43", payload);
+  console.log("43", payload, config.auth[provider]);
   const response = await http.post(
     config.auth[provider].token_endpoint,
     {
@@ -22,13 +22,13 @@ router.post("/login", auth({ block: false }), async (req, res) => {
       client_id: config.auth[provider].client_id,
       client_secret: config.auth[provider].client_secret,
       redirect_uri: config.auth[provider].redirect_uri,
-      grant_type: config.auth[provider].grant_type,
-    },
-    {
-      headers: {
-        Accept: "application/json",
-      },
+      grant_type: "authorization_code",
     }
+    // {
+    //   headers: {
+    //     Accept: "application/json",
+    //   },
+    // }
   );
 
   if (!response) return res.sendStatus(500);
@@ -40,7 +40,7 @@ router.post("/login", auth({ block: false }), async (req, res) => {
   if (onlyOauth) {
     //let token = response.data.split("=")[1].split("&")[0];
     let accessToken = response.data.access_token;
-
+    console.log("accessToken in Github:", accessToken);
     const userResponse = await http.post(
       config.auth[provider].user_endpoint,
       {},
@@ -61,18 +61,18 @@ router.post("/login", auth({ block: false }), async (req, res) => {
     const decoded = jwt.decode(response.data.id_token);
     if (!decoded) return res.sendStatus(500);
     openId = decoded.sub;
+    console.log("sub", openId);
   }
 
-  const key = "providers." + provider;
+  const key = `providers.${provider}`;
 
   let user = await User.findOne({ [key]: openId });
 
   if (user && res.locals.user?.providers) {
-    console.log("provider 78", res.locals.user.providers);
+    console.log("provider 71", res.locals.user.providers);
     user.providers = { ...user.providers, ...res.locals.user.providers };
     user = await user.save();
   }
-
   const sessionToken = jwt.sign(
     {
       userId: user?._id,

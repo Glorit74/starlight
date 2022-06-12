@@ -1,0 +1,11 @@
+{
+  "web": {
+    "client_id": "806136419820-ne2p17i3tjap5h3rc1r6a0gf88sm3gjm.apps.googleusercontent.com",
+    "project_id": "starlight-353020",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": ["http://localhost:3000/callback"]
+  }
+}

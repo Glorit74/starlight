@@ -9,7 +9,7 @@ const http = () => {
   const post = async (...params) => {
     try {
       const response = await instance.post(...params); //
-      console.log("HTTP RESPONSE DATA: ", response?.data?.login);
+      console.log("HTTP RESPONSE DATA: ", response?.data);
       return response;
     } catch (err) {
       console.log("POST error status: ", err?.response?.status);
