@@ -1,7 +1,7 @@
 
 //Google
 
-https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=806136419820-ne2p17i3tjap5h3rc1r6a0gf88sm3gjm.apps.googleusercontent.com&scope=openid%20profile%20email&redirect_uri=http://localhost:3000/callback
+https://accounts.google.com/o/oauth2/v2/auth?response_type=code&display=popup&client_id=806136419820-ne2p17i3tjap5h3rc1r6a0gf88sm3gjm.apps.googleusercontent.com&scope=openid%20profile%20email&redirect_uri=http://localhost:3000/callback
 
 
 
@@ -13,7 +13,16 @@ https://github.com/login/oauth/authorize?response_type=code&client_id=4d02914d6c
 
 
 //Facebook
-https://www.facebook.com/v14.0/dialog/oauth?
-  client_id={app-id}
-  &redirect_uri={redirect-uri}
-  &state={state-param}
+https://www.facebook.com/v14.0/dialog/oauth?clinet_id=551527173270547&response_type=code
+display=popup&
+auth_type=rerequest&scope=email&
+&redirect_uri=http://localhost:3000/callback
+
+//név profilkép
+https://www.facebook.com/v14.0/dialog/oauth?response_type=token&display=popup&client_id=551527173270547&redirect_uri=https://developers.facebook.com/tools/explorer/callback&auth_type=rerequest&scope=public_profile
+
+
+
+
+
+https://www.facebook.com/v14.0/dialog/oauth?response_type=token&display=popup&client_id=551527173270547&redirect_uri=https://developers.facebook.com/tools/explorer/callback&scope=pages_read_engagement

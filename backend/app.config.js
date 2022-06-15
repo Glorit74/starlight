@@ -18,12 +18,19 @@ const config = {
     //   user_endpoint: "http://api.github.com/user",
     //   user_id: "id",
     // },
-    /*   facebook: {
-    client_id: "",
-    redirect_uri: "",
-	state={"{st=state123abc,ds=123456789}"},
-    tokenEndpoint: "",
-  }, */
+
+    facebook: {
+      client_id: process.env.FACEBOOK_CLIENT_ID,
+      client_secret: process.env.FACEBOOK_CLIENT_SECRET,
+      redirect_uri: "http://localhost:3000/auth/facebook/callback",
+      tokenEndpoint: "https://graph.facebook.com/v14.0/oauth/access_token",
+      grant_type: "authorization_code",
+      use_database: false,
+      host: "localhost",
+      username: "root",
+      password: "",
+      database: "Starlight",
+    },
   },
 };
 
