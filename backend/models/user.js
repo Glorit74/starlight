@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     google: { type: String, sparse: true, unique: true },
     facebook: { type: String, sparse: true, unique: true },
     github: { type: String, sparse: true, unique: true },
+    //sparce azért kell, mert így nem probléma, ha több provider nincs és így több nulla is van, ami nem lehet unique
   },
   isAdmin: { type: Boolean, default: false },
 });

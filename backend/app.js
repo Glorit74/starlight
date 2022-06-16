@@ -7,6 +7,7 @@ const errorHandler = require("./middlewares/errorHandler");
 const morgan = require("morgan");
 const userRoutes = require("./routes/user");
 const userPerformance = require("./routes/performance");
+const userActor = require("./routes/actor");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.get("/api/private", auth({ block: true }), (req, res) => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/performance", userPerformance);
+app.use("/api/actor", userActor);
 
 // app.use(errorHandler);
 

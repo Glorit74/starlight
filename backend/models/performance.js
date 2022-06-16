@@ -1,15 +1,5 @@
 const mongoose = require("mongoose");
-
-const actorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: String,
-  awards: {
-    title: String,
-    year: String,
-  },
-  picture: String,
-  roles: [String],
-});
+const { Actor, actorSchema } = require("./actor");
 
 const newsSchema = new mongoose.Schema({
   title: { type: String, required: true },
