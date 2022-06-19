@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
   res.json(performance);
 });
 
-router.post("/", auth({ block: true }), async (req, res) => {
+router.post("/", auth({ block: false }), async (req, res) => {
   const {
     title,
     subTitle,
@@ -27,7 +27,7 @@ router.post("/", auth({ block: true }), async (req, res) => {
     picture,
     video,
   } = req.body;
-  const newPf = new Performance({
+  const newPf = await Performance.create({
     title: title,
     subTitle: subTitle,
     author: author,
@@ -41,29 +41,28 @@ router.post("/", auth({ block: true }), async (req, res) => {
     picture: picture,
     video: video,
   });
-  newPf.save();
+
   if (!newPf) return res.status(404).json([]);
-  res.json(newPf);
+  res.status(200).json(newPf);
 });
 
-router.post("/venue", auth({ block: true }), async (req, res) => {
+router.post("/venue", auth({ block: false }), async (req, res) => {
   const { title, place, date, time } = req.body;
   const venue = { place: place, date: date, time: time };
   let newPf = await Performance.findOneAndUpdate(
     { title: title },
-    { $push: { venue: venue } },
-    { upsert: true, new: true }
+    { $push: { venue: venue } }
+    // { upsert: true, new: true }
   );
   res.status(200).json(newPf);
 });
 
-router.post("/actor", auth({ block: true }), async (req, res) => {
+router.post("/actor", auth({ block: false }), async (req, res) => {
   const { title, name, role } = req.body;
   const actor = { name: name, role: role };
   let newPf = await Performance.findOneAndUpdate(
     { title: title },
-    { $push: { actor: actor } },
-    { upsert: true, new: true }
+    { $push: { actor: actor } }
   );
   res.status(200).json(newPf);
 });

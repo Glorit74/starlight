@@ -16,7 +16,12 @@ const performanceSchema = new mongoose.Schema({
   subTitle: String,
   description: String,
   author: String,
-  actor: [actorSchema],
+  actor: [
+    {
+      name: String,
+      role: String,
+    },
+  ],
   venue: [
     {
       place: String,

@@ -11,14 +11,14 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/title", async (req, res) => {
-  const title = req.query.title;
+  const title = req.body.title;
   console.log(title);
   if (!title)
     return res.status(400).json("Ilyen című alőadás még nincs rögzítve");
 
   const actor = await Actor.find(
     {
-      "roles.title": "Elfújta a szél",
+      "roles.title": new RegExp(`^${req.body.title}`, "i"),
       // new RegExp(`^${req.query.title}`, "i")
     },
 
@@ -35,7 +35,7 @@ router.get("/title", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { name, description, picture } = req.body;
-  if (!name) return res.status(400).json("There is no actor's name");
+  if (!name) return res.status(400).json("Név megadása szükséges");
   const newActor = await Actor.create({
     name: name,
     description: description,
@@ -46,14 +46,17 @@ router.post("/", async (req, res) => {
 });
 
 router.post("/awards", async (req, res) => {
-  const { actor, title, year } = req.body;
+  const { name, title, year } = req.body;
   const award = { title: title, year: year };
   let newActor = await Actor.findOneAndUpdate(
-    { name: actor },
-    { $push: { award: award } }
+    { name: name },
+    { $push: { awards: award } }
+    // { upsert: true, new: true }
   );
+
   res.status(200).json(newActor);
 });
+
 router.post("/role", async (req, res) => {
   const { actor, title, role } = req.body;
   const newRole = { title: title, role: role };
