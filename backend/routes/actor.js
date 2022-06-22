@@ -3,6 +3,7 @@ const http = require("../utils/http");
 const auth = require("../middlewares/auth");
 const User = require("../models/user");
 const Actor = require("../models/actor");
+const { findOne } = require("../models/user");
 
 router.get("/", async (req, res) => {
   const actor = await Actor.find({}, "name -_id");
@@ -34,34 +35,67 @@ router.get("/title", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { name, description, picture } = req.body;
+  const { name, description, picture, id } = req.body;
   if (!name) return res.status(400).json("Név megadása szükséges");
-  const newActor = await Actor.create({
-    name: name,
-    description: description,
-    picture: picture,
-  });
-  if (!newActor) return res.status(400).json([]);
+  let newActor;
+
+  const actor = await Actor.findOne({ name: name });
+  if (!actor) {
+    newActor = await Actor.create({
+      name: name,
+      description: description,
+      picture: picture,
+    });
+  } else if (actor && !id)
+    return res.status(400).json("Több azonos nevű színész, id!!");
+  else {
+    newActor = await Actor.findOneAndUpdate(
+      {
+        id: id,
+        name: name,
+      },
+      { description: description, picture: picture },
+      { new: true }
+    );
+  }
+  if (!newActor) return res.status(500).json([]);
   res.status(200).json(newActor);
 });
 
 router.post("/awards", async (req, res) => {
-  const { name, title, year } = req.body;
+  const { name, title, year, id } = req.body;
   const award = { title: title, year: year };
-  let newActor = await Actor.findOneAndUpdate(
-    { name: name },
-    { $push: { awards: award } }
-    // { upsert: true, new: true }
-  );
 
-  res.status(200).json(newActor);
+  const actor = await Actor.findById(id);
+  if (!actor) {
+    newActorAward = await Actor.create({
+      name: name,
+      awards: award,
+    });
+  } else {
+    const existingAward = await Actor.find({
+      _id: id,
+      name: name,
+      "awards.title": title,
+      "awards.year": year,
+    });
+
+    if (!existingAward.length) {
+      actor.awards.push(award);
+      await actor.save();
+      res.status(200).json(actor);
+    } else return res.status(400).json(existingAward);
+  }
 });
 
 router.post("/role", async (req, res) => {
-  const { actor, title, role } = req.body;
+  const { name, title, role, _id } = req.body;
   const newRole = { title: title, role: role };
-  let newActor = await Actor.findOneAndUpdate(
-    { name: actor },
+  // only in DB existed actor has roles
+  const actor = await Actor({ _id: _id });
+  if (!actor) return res.status(400).json([]);
+  const newActor = await Actor.findOneAndUpdate(
+    { name: name },
     { $push: { roles: newRole } },
     { upsert: true, new: true }
   );

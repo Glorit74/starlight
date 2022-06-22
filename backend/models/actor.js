@@ -16,6 +16,7 @@ const actorSchema = new mongoose.Schema({
       role: String,
     },
   ],
+  isActive: { type: Boolean, default: true },
 });
 
 const Actor = mongoose.model("Actor", actorSchema);

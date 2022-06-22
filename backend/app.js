@@ -5,9 +5,11 @@ const auth = require("./middlewares/auth");
 const errorHandler = require("./middlewares/errorHandler");
 
 const morgan = require("morgan");
+
 const userRoutes = require("./routes/user");
-const userPerformance = require("./routes/performance");
-const userActor = require("./routes/actor");
+const performanceRoutes = require("./routes/performance");
+const actorRoutes = require("./routes/actor");
+const placeRoutes = require("./routes/place");
 
 const app = express();
 
@@ -20,19 +22,19 @@ app.use(express.json());
 
 app.use(morgan(":method :url :status - :response-time ms"));
 
-app.get("/api/public", (req, res) => {
-  console.log("public");
-  res.send("Hello Public World ! ");
-});
-app.get("/api/private", auth({ block: true }), (req, res) => {
-  console.log("private");
-  res.send(`Hello Private world, your user id is: ${res.locals.user.userId} !`);
-});
+// app.get("/api/public", (req, res) => {
+//   console.log("public");
+//   res.send("Hello Public World ! ");
+// });
+// app.get("/api/private", auth({ block: true }), (req, res) => {
+//   console.log("private");
+//   res.send(`Hello Private world, your user id is: ${res.locals.user.userId} !`);
+// });
 
 app.use("/api/user", userRoutes);
-app.use("/api/performance", userPerformance);
-app.use("/api/actor", userActor);
-
+app.use("/api/performance", performanceRoutes);
+app.use("/api/actor", actorRoutes);
+app.use("/api/place", placeRoutes);
 // app.use(errorHandler);
 
 module.exports = app;
