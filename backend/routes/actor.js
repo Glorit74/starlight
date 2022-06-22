@@ -65,6 +65,7 @@ router.post("/", async (req, res) => {
 router.post("/awards", async (req, res) => {
   const { name, title, year, id } = req.body;
   const award = { title: title, year: year };
+  if (!name) return res.status(400).json("Data missing");
 
   const actor = await Actor.findById(id);
   if (!actor) {
@@ -72,6 +73,7 @@ router.post("/awards", async (req, res) => {
       name: name,
       awards: award,
     });
+    return res.status(200).json(newActorAward);
   } else {
     const existingAward = await Actor.find({
       _id: id,
@@ -124,14 +126,8 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 router.delete("/role/delete", async (req, res) => {
-  const { actorId, roleId, role } = req.body;
+  const { actorId, roleId } = req.body;
 
-  //   const actor = Actor.find(
-  //     { "roles.role": role },
-  //     { roles: { $elemMatch: { role: role } } }
-  //   );
-
-  //   console.log(actor?._conditions);
   const actor = await Actor.findOneAndUpdate(
     { _id: actorId },
     {
@@ -140,16 +136,11 @@ router.delete("/role/delete", async (req, res) => {
       },
     },
     { new: true }
-    // function (err, doc) {
-    //   if (err) return res.status(400).json({ success: false, err });
-    //   res.status(200).json({ success: true, doc });
-    // }
   )
-    .then((role) => console.log(role, "maradék szerep"))
+    .then((role) => console.log(role))
     .catch((err) => console.log(err));
 
   res.sendStatus(200);
-  //   .json(actor);
 });
 
 module.exports = router;
