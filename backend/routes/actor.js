@@ -89,17 +89,45 @@ router.post("/awards", async (req, res) => {
 });
 
 router.post("/role", async (req, res) => {
-  const { name, title, role, _id } = req.body;
+  const { name, title, role, id } = req.body;
   const newRole = { title: title, role: role };
-  // only in DB existed actor has roles
-  const actor = await Actor({ _id: _id });
+  // only in DB existed actor can have roles
+  if (!id) return res.status(400).json([]);
+
+  const actor = await Actor.findById(id);
+
   if (!actor) return res.status(400).json([]);
-  const newActor = await Actor.findOneAndUpdate(
-    { name: name },
-    { $push: { roles: newRole } },
-    { upsert: true, new: true }
-  );
-  res.status(200).json(newActor);
+
+  const existingRole = await Actor.find({
+    _id: id,
+    name: name,
+    "roles.title": title,
+    "roles.role": role,
+    // in one pf can be more roles
+  });
+  if (!existingRole.length) {
+    actor.roles.push(newRole);
+    await actor.save();
+    res.status(200).json(actor);
+  } else return res.status(400).json(existingRole);
+});
+
+router.delete("/delete/:id", async (req, res) => {
+  console.log(req.params);
+  //   res.send("Got a DELETE request at /user");
+  Actor.findOneAndDelete({
+    _id: req.params.id,
+  }).exec((err, doc) => {
+    if (err) return res.status(400).json({ success: false, err });
+    res.status(200).json({ success: true, doc });
+  });
+});
+
+router.delete("/role/delete", async (req, res) => {
+  const { actorId, roleId } = req.body;
+
+  const actor = actor.roles.id(roleId).remove();
+  res.status(200).json(actor);
 });
 
 module.exports = router;
