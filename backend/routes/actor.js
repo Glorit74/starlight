@@ -3,7 +3,7 @@ const http = require("../utils/http");
 const auth = require("../middlewares/auth");
 const User = require("../models/user");
 const Actor = require("../models/actor");
-const { findOne } = require("../models/user");
+const { findOne, replaceOne } = require("../models/user");
 
 router.get("/", async (req, res) => {
   const actor = await Actor.find({}, "name -_id");
@@ -124,10 +124,32 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 router.delete("/role/delete", async (req, res) => {
-  const { actorId, roleId } = req.body;
+  const { actorId, roleId, role } = req.body;
 
-  const actor = actor.roles.id(roleId).remove();
-  res.status(200).json(actor);
+  //   const actor = Actor.find(
+  //     { "roles.role": role },
+  //     { roles: { $elemMatch: { role: role } } }
+  //   );
+
+  //   console.log(actor?._conditions);
+  const actor = await Actor.findOneAndUpdate(
+    { _id: actorId },
+    {
+      $pull: {
+        roles: { _id: roleId },
+      },
+    },
+    { new: true }
+    // function (err, doc) {
+    //   if (err) return res.status(400).json({ success: false, err });
+    //   res.status(200).json({ success: true, doc });
+    // }
+  )
+    .then((role) => console.log(role, "maradék szerep"))
+    .catch((err) => console.log(err));
+
+  res.sendStatus(200);
+  //   .json(actor);
 });
 
 module.exports = router;
