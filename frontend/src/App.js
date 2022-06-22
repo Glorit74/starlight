@@ -5,6 +5,7 @@ import Callback from "./pages/Callback";
 import Protected from "./components/Protected";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Program from "./pages/Program";
 import Performance from "./pages/Performance";
 import Place from "./pages/Place";
 import Actor from "./pages/Actor";
@@ -19,6 +20,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/program" element={<Program />} />
         <Route path="/performance" element={<Performance />} />
         <Route path="/place" element={<Place />} />
         <Route path="/actor" element={<Actor />} />
