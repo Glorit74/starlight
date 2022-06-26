@@ -13,6 +13,7 @@ import About from "./pages/About";
 import BackPf from "./pages/BackPf";
 import BackPlace from "./pages/BackPlace";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -29,9 +30,17 @@ function App() {
 
         <Route path="/callback" element={<Callback />} />
         <Route
-          path="/backpf"
+          path="/register"
           element={
             <Protected key={1}>
+              <Register />
+            </Protected>
+          }
+        />
+        <Route
+          path="/backpf"
+          element={
+            <Protected key={2}>
               <BackPf />
             </Protected>
           }
@@ -39,7 +48,7 @@ function App() {
         <Route
           path="/backplace"
           element={
-            <Protected key={2}>
+            <Protected key={3}>
               <BackPlace />
             </Protected>
           }

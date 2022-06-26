@@ -20,16 +20,7 @@ app.use(
 );
 app.use(express.json());
 
-app.use(morgan(":method :url :status - :response-time ms"));
-
-// app.get("/api/public", (req, res) => {
-//   console.log("public");
-//   res.send("Hello Public World ! ");
-// });
-// app.get("/api/private", auth({ block: true }), (req, res) => {
-//   console.log("private");
-//   res.send(`Hello Private world, your user id is: ${res.locals.user.userId} !`);
-// });
+// app.use(morgan(":method :url :status - :response-time ms"));
 
 app.use("/api/user", userRoutes);
 app.use("/api/performance", performanceRoutes);

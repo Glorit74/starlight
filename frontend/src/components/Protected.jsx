@@ -20,7 +20,6 @@ const Protected = ({ children }) => {
       )}
     </>
   );
-  //   </><React.Fragment>{children}</React.Fragment>;
 };
 
 export default Protected;

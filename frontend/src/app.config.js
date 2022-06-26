@@ -1,6 +1,6 @@
 const _config = {
   dev: {
-    todoAPI: "http://localhost:8080/api",
+    todoAPI: "http://localhost:4001/api",
     google_client_id:
       "806136419820-ne2p17i3tjap5h3rc1r6a0gf88sm3gjm.apps.googleusercontent.com",
     google_base_url: "",

@@ -6,7 +6,7 @@ const Actor = require("../models/actor");
 const { findOne, replaceOne } = require("../models/user");
 
 router.get("/", async (req, res) => {
-  const actor = await Actor.find({}, "name -_id");
+  const actor = await Actor.find({}, "name _id");
   if (!actor) return res.status(404).json([]);
   res.status(200).json(actor);
 });
@@ -52,9 +52,8 @@ router.post("/", async (req, res) => {
     newActor = await Actor.findOneAndUpdate(
       {
         id: id,
-        name: name,
       },
-      { description: description, picture: picture },
+      { name: name, description: description, picture: picture },
       { new: true }
     );
   }
@@ -62,7 +61,7 @@ router.post("/", async (req, res) => {
   res.status(200).json(newActor);
 });
 
-router.post("/awards", async (req, res) => {
+router.post("/awards", auth({ block: true }), async (req, res) => {
   const { name, title, year, id } = req.body;
   const award = { title: title, year: year };
   if (!name) return res.status(400).json("Data missing");
@@ -77,7 +76,6 @@ router.post("/awards", async (req, res) => {
   } else {
     const existingAward = await Actor.find({
       _id: id,
-      name: name,
       "awards.title": title,
       "awards.year": year,
     });
@@ -102,7 +100,6 @@ router.post("/role", async (req, res) => {
 
   const existingRole = await Actor.find({
     _id: id,
-    name: name,
     "roles.title": title,
     "roles.role": role,
     // in one pf can be more roles

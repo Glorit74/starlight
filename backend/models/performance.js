@@ -30,7 +30,6 @@ const performanceSchema = new mongoose.Schema({
     },
   ],
   director: String,
-  costumeDesign: String,
   music: String,
   choregrapher: String,
   duration: Number,

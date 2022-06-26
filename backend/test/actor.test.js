@@ -9,6 +9,7 @@ const {
   setupGoogleSuccessResponse,
   setupGoogleErrorResponse,
 } = require("../utils/httpMock");
+const { login } = require("../utils/login");
 
 describe("/api/actor tests", () => {
   let connection;
@@ -52,6 +53,7 @@ describe("/api/actor tests", () => {
     const name = "XY";
     const description = "abc";
     const picture = "";
+    await login(client);
 
     //when
     const response = await client.post("/api/actor").send({
@@ -68,6 +70,27 @@ describe("/api/actor tests", () => {
     expect(response.type).toEqual("application/json");
     expect(response.body).toEqual(JSON.parse(response.text));
   });
+  test("4. should return 401 no auth", async () => {
+    //given
+
+    const name = "XY";
+    const description = "abc";
+    const picture = "";
+
+    //when
+    const response = await client.post("/api/actor").send({
+      name,
+      description,
+    });
+    console.log(typeof JSON.parse(response.text), JSON.parse(response.text));
+    //then
+    expect(response.status).toBe(401);
+    const ActorLength = await Actor.count();
+    expect(ActorLength).toBe(0);
+    const actors = await Actor.find();
+    expect(response.type).toEqual("application/json");
+    expect(response.body).toEqual(JSON.parse(response.text));
+  });
 
   test("3. should return 200 and  actor updated in BD with new award", async () => {
     //given
@@ -75,6 +98,7 @@ describe("/api/actor tests", () => {
     const name = "XY";
     const title = "Jászai Mari-díj";
     const year = 1974;
+    await login(client);
 
     //when
     const response = await client.post("/api/actor/awards").send({
