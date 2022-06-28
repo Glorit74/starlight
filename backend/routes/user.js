@@ -36,10 +36,10 @@ router.post("/login", auth({ block: false }), async (req, res) => {
 
   let openId; //github oauth flow
   const onlyOauth = !response.data.id_token;
-
   if (onlyOauth) {
     //let token = response.data.split("=")[1].split("&")[0];
     let accessToken = response.data.access_token;
+
     const userResponse = await http.post(
       config.auth[provider].user_endpoint,
       {},
@@ -74,11 +74,11 @@ router.post("/login", auth({ block: false }), async (req, res) => {
       providers: user ? user.providers : { [provider]: openId },
     },
     process.env.JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "2h" }
   );
 
   res.json({ sessionToken });
-
+  console.log(sessionToken);
   //create profile, our sessionToken
   router.post("/create", auth({ block: true }), async (req, res) => {
     if (!req.body?.username) return res.sendStatus(400);

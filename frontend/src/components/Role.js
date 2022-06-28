@@ -1,58 +1,118 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
+import { Button, ButtonGroup, Box, TextField } from "@mui/material";
 
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
-
-function Role({ title, role }) {
-  const { token, user } = useAuth();
+function Role({ r, title, pfId }) {
   const { get, post } = toDoApi();
-  const [roles, setRoles] = useState();
+  const [isUpdate, setIsUpdate] = useState(false);
 
-  const getPerformance = async () => {
-    const responsePf = await get("/performance");
-    const filteredPf = responsePf.data.filter((pf) => pf.title === title);
-    console.log(filteredPf);
-    setRoles(filteredPf[0].actor);
+  const [isError, setIsError] = useState(false);
+  const [message, setMessage] = useState("");
+  const [newName, setNewName] = useState(r.name);
+  const [newRole, setNewRole] = useState(r.role);
+
+  const updateRole = async () => {
+    setIsUpdate(!isUpdate);
   };
 
-  //   const updateRole = async () => {
-  // 	const responseRole = await post("/performance")
-  //   }
+  const saveRole = async () => {
+    console.log(newName, newRole);
+    const responseRole = await post("/performance/actor/modify", {
+      id: pfId,
+      actorId: r._id,
+      title: title,
+      name: newName,
+      role: newRole,
+    });
+    console.log("responseRole", responseRole?.data, responseRole?.statusText);
+    if (responseRole?.status === 400) {
+      setIsError(true);
+      setMessage(responseRole.statusText);
+    } else setIsUpdate(false);
+  };
+
+  const deleteRole = async () => {
+    console.log("valami", pfId, r._id);
+    const responseDeleteRole = await post("/performance/actor/delete", {
+      performanceId: pfId,
+      actorId: r._id,
+    });
+    console.log("responseDeleteRole status:", responseDeleteRole);
+    setIsUpdate(false);
+  };
 
   useEffect(() => {
-    getPerformance();
-    // eslint-disable-next-line
-  }, [title, role]);
+    console.log(r);
+  }, [isUpdate]);
 
   return (
-    <>
-      {roles.map((r) => (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              margin: "5px",
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        margin: "5px",
+      }}
+    >
+      {isUpdate ? (
+        <Box
+        //   sx={{
+        //     "& .MuiTextField-root": { m: 1, width: "25ch" },
+        //   }}
+        >
+          {isError && <div>{message}</div>}
+          <TextField
+            size="small"
+            label="Neve:"
+            InputLabelProps={{ shrink: true }}
+            color="primary"
+            name="newName"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+          />
+          <TextField
+            size="small"
+            label="Szerepe:"
+            InputLabelProps={{ shrink: true }}
+            color="primary"
+            name="newRole"
+            value={newRole}
+            onChange={(e) => setNewRole(e.target.value)}
+          />
+          <ButtonGroup
+            variant="contained"
+            sx={{
+              Width: 80,
+              margin: "auto",
             }}
-            key={r._id}
           >
-            {r.name} - {r.role}
-            <ButtonGroup
-              variant="contained"
-              sx={{
-                Width: 80,
-                margin: "auto",
-              }}
-            >
-              <Button color="warning">Módosítás</Button>
-              <Button color="error">Törlés</Button>
-            </ButtonGroup>
-          </div>
-        </div>
-      ))}
-    </>
+            <Button color="success" onClick={saveRole}>
+              Mentés
+            </Button>
+            <Button color="error" onClick={() => setIsUpdate(false)}>
+              Mégsem
+            </Button>
+          </ButtonGroup>
+        </Box>
+      ) : (
+        <Box>
+          {r.name} - {r.role}
+          <ButtonGroup
+            variant="contained"
+            sx={{
+              Width: 80,
+              margin: "auto",
+            }}
+          >
+            <Button color="warning" onClick={() => setIsUpdate(true)}>
+              Módosítás
+            </Button>
+            <Button color="error" onClick={deleteRole}>
+              Törlés
+            </Button>
+          </ButtonGroup>
+        </Box>
+      )}
+    </div>
   );
 }
 

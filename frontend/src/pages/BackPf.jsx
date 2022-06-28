@@ -14,7 +14,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { ButtonGroup, FormGroup, FormHelperText } from "@mui/material";
-import Role from "../components/Role";
+import Roles from "../components/Roles";
 
 function BackPf() {
   const { token } = useAuth();
@@ -33,11 +33,13 @@ function BackPf() {
     video: "",
     description: "",
   });
+  const [message, setMessage] = useState("");
   const [actorSelect, setActorSelect] = useState([]);
   const [performanceSelect, setPerformanceSelect] = useState([]);
   const [selectedPf, setSelectedPf] = useState("");
   const [selectedActor, setSelectedActor] = useState("");
   const [actorRole, setActorRole] = useState("");
+  const [isAdd, setIsAdd] = useState(false);
 
   const [palce, setPlace] = useState({
     palace: "",
@@ -53,8 +55,16 @@ function BackPf() {
 
   const createNewPerformance = async () => {
     const responseNewPf = await post("/performance", performance);
-    console.log("Pf: ", createNewPerformance?.status);
-    if (responseNewPf?.status === 200) setPerformance("");
+    console.log("Pf: ", responseNewPf?.status);
+    if (responseNewPf?.status === 200) {
+      setMessage("Az adatok mentésre kerültek.");
+      setIsAdd(!isAdd);
+    }
+    if (responseNewPf?.status === 500) {
+      setMessage(
+        "A mentés nem történt meg, nincs kapcsolat az adatbázissal. Próbálja újra később!"
+      );
+    }
   };
 
   const getActors = async () => {
@@ -67,24 +77,26 @@ function BackPf() {
     setPerformanceSelect(responsePf.data);
   };
 
-  const setActorsRole = async () => {
+  const addActorsRole = async () => {
     const responseRole = await post("/performance/actor", {
       name: selectedActor,
       title: selectedPf,
       role: actorRole,
     });
-    console.log(responseRole.status);
+    setIsAdd(!isAdd);
   };
 
   useEffect(() => {
     getActors();
     getPerformance();
+    setMessage("");
+
     // eslint-disable-next-line
-  }, []);
+  }, [isAdd]);
 
   return (
     <div>
-      <h2>Előadások</h2>
+      <h2>Előadások:</h2>
       {token && (
         <>
           <Button
@@ -103,76 +115,92 @@ function BackPf() {
             noValidate
             autoComplete="off"
           >
-            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
-              <TextField
-                label="Előadás címe"
-                helperText="kötelezően megadandó adat"
-                color="primary"
-                focused
-                required
-                name="title"
-                value={performance.title}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Alcím"
-                color="primary"
-                name="subTitle"
-                value={performance.subTitle}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Szerző"
-                color="primary"
-                name="author"
-                value={performance.author}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Rendező"
-                color="primary"
-                name="director"
-                value={performance.director}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Music"
-                color="primary"
-                name="music"
-                value={performance.music}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Koreográfia"
-                color="primary"
-                name="choregrapher"
-                value={performance.choregrapher}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Hossza (percben)"
-                color="primary"
-                name="duration"
-                // endAdornment={
-                //   <InputAdornment position="end">perc</InputAdornment>
-                // }
-                value={performance.duration}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Felvonás száma"
-                color="primary"
-                name="act"
-                value={performance.act}
-                onChange={(e) => handleChange(e)}
-              />
-              <TextField
-                label="Fénykép"
-                color="primary"
-                name="picture"
-                value={performance.picture}
-                onChange={(e) => handleChange(e)}
-              />
+            <FormControl
+              //   sx={{ m: 1, minWidth: "25ch", maxWidth: "35ch" }}
+              variant="outlined"
+            >
+              <div>
+                <TextField
+                  label="Előadás címe"
+                  helperText="kötelezően megadandó adat"
+                  color="primary"
+                  focused
+                  required
+                  name="title"
+                  value={performance.title}
+                  onChange={(e) => handleChange(e)}
+                />
+                <TextField
+                  label="Alcím"
+                  color="primary"
+                  name="subTitle"
+                  value={performance.subTitle}
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="Szerző"
+                  color="primary"
+                  name="author"
+                  value={performance.author}
+                  onChange={(e) => handleChange(e)}
+                />
+                <TextField
+                  label="Rendező"
+                  color="primary"
+                  name="director"
+                  value={performance.director}
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="Music"
+                  color="primary"
+                  name="music"
+                  value={performance.music}
+                  onChange={(e) => handleChange(e)}
+                />
+                <TextField
+                  label="Koreográfia"
+                  color="primary"
+                  name="choregrapher"
+                  value={performance.choregrapher}
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
+              <div>
+                <TextField
+                  label="Hossza (percben)"
+                  color="primary"
+                  name="duration"
+                  // type="number"
+                  // endAdornment={
+                  //   <InputAdornment position="end">perc</InputAdornment>
+                  // }
+                  value={performance.duration}
+                  onChange={(e) => handleChange(e)}
+                />
+                <TextField
+                  label="Felvonás száma"
+                  color="primary"
+                  name="act"
+                  // type="number"
+                  // InputLabelProps={{
+                  //   shrink: true,
+                  // }}
+                  value={performance.act}
+                  onChange={(e) => handleChange(e)}
+                />
+                <TextField
+                  label="Fénykép"
+                  color="primary"
+                  name="picture"
+                  value={performance.picture}
+                  onChange={(e) => handleChange(e)}
+                />
+              </div>
 
               <TextField
                 label="Előzetes"
@@ -181,14 +209,18 @@ function BackPf() {
                 value={performance.video}
                 onChange={(e) => handleChange(e)}
               />
-              <TextareaAutosize
+
+              <TextField
+                multiline
+                label="Tartalom"
                 maxRows={20}
-                aria-label="maximum height"
-                placeholder="Maximum 4 rows"
-                defaultValue=""
-                style={{ width: 200 }}
+                minRows={4}
+                name="description"
+                value={performance.description}
+                onChange={(e) => handleChange(e)}
               />
             </FormControl>
+            <div className="message">{message}</div>
           </Box>
           <h2>Színész hozzáadása:</h2>
           <Box
@@ -204,7 +236,6 @@ function BackPf() {
               <Select
                 labelId="performance_label"
                 id="performance"
-                default={performance.title}
                 value={selectedPf}
                 label="Előadás:"
                 onChange={(e) => setSelectedPf(e.target.value)}
@@ -239,13 +270,18 @@ function BackPf() {
               <Button
                 variant="contained"
                 color="success"
-                onClick={setActorsRole}
+                onClick={addActorsRole}
               >
                 Hozzáadás
               </Button>
             </FormGroup>
           </Box>
-          <Role title={selectedPf} role={actorRole} />
+          <Roles
+            isAdd={isAdd}
+            title={selectedPf}
+            role={actorRole}
+            name={selectedActor}
+          />
         </>
       )}
     </div>

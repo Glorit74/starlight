@@ -3,19 +3,23 @@ const http = require("../utils/http");
 const User = require("../models/user");
 const Performance = require("../models/performance");
 const auth = require("../middlewares/auth");
+const { Error } = require("mongoose");
 
 router.get("/", async (req, res) => {
-  const performance = await Performance.find().limit(req.query.limit);
-  //   .sort({ "venue.date": 1 })
-  //   .exec();
+  const performance = await Performance.find({}).sort({
+    title: "asc",
+  });
+  // .exec();
+
   if (!performance) return res.status(404).json([]);
   res.json(performance);
 });
 
 router.post("/", auth({ block: true }), async (req, res) => {
   const resp = req.body;
-  //   console.log(res.body, resp, "resp");
+  //   console.log(res.body, "resp");
   let newPf;
+  if (!resp.title) return res.status(404).json("Cím kötelező");
   const existedPf = await Performance.findOne({ title: resp.title });
   if (!existedPf) {
     newPf = await Performance.create(resp);
@@ -37,7 +41,7 @@ router.post("/", auth({ block: true }), async (req, res) => {
       { new: true }
     );
   }
-  if (!newPf) return res.status(404).json([]);
+  if (!newPf) return res.status(500).json([]);
   res.status(200).json(newPf);
 });
 
@@ -69,7 +73,7 @@ router.post("/venue", auth({ block: true }), async (req, res) => {
 
 router.post("/actor", auth({ block: true }), async (req, res) => {
   const { title, name, role } = req.body;
-  if (!title || !name) return res.status(400).json("Adat hiányzik");
+  if (!title || !name || !role) return res.status(400).json("Adat hiányzik");
   const existingActor = await Performance.findOne({
     title: title,
     "actor.name": name,
@@ -86,6 +90,56 @@ router.post("/actor", auth({ block: true }), async (req, res) => {
     );
   }
   res.status(200).json(newPf);
+});
+
+router.post("/actor/modify", auth({ block: true }), async (req, res) => {
+  const { name, role, actorId } = req.body;
+  if (!actorId) return res.status(400).json("Adat hiányzik");
+
+  const Pf2 = await Performance.findOne({ "actor._id": actorId }, "actor");
+  const newPf = Pf2.actor.map((p) => {
+    if (p._id == actorId) {
+      console.log("Ok");
+      p.role = role;
+      p.name = name;
+    }
+  });
+  await Pf2.save();
+  console.log(newPf);
+  //   Pf2.actor[0].set = (0, "csoki");
+  //   await Pf2.save();
+  //   console.log(Pf2.actor[0].role);
+  //   const newPf = await Performance.findOneAndUpdate(
+  //     { title: title, "actor._id": actorId },
+  //     {
+  //       "actor.$.name": name,
+  //       "actor.$.role": role,
+  //     }
+  //   );
+  //   if (!newPf) return res.sendStatus(400);
+  res.status(200).json(Pf2);
+});
+
+router.post("/actor/delete", auth({ block: true }), async (req, res) => {
+  const { performanceId, actorId } = req.body;
+
+  const pf = await Performance.findOneAndUpdate(
+    { _id: performanceId },
+    {
+      $pull: {
+        actor: { _id: actorId },
+      },
+    },
+    { new: true }
+  )
+    .then((pf) => {
+      console.log(pf);
+      res.status(200).json(pf);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(400);
+    });
 });
 
 module.exports = router;
