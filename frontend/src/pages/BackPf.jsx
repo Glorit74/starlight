@@ -15,6 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { ButtonGroup, FormGroup, FormHelperText } from "@mui/material";
 import Roles from "../components/Roles";
+import PlaceHolder from "../components/PlaceHolder";
 
 function BackPf() {
   const { token } = useAuth();
@@ -40,12 +41,6 @@ function BackPf() {
   const [selectedActor, setSelectedActor] = useState("");
   const [actorRole, setActorRole] = useState("");
   const [isAdd, setIsAdd] = useState(false);
-
-  const [palce, setPlace] = useState({
-    palace: "",
-    date: "",
-    time: "",
-  });
 
   const handleChange = (e) => {
     setPerformance((prevText) => {
@@ -226,9 +221,8 @@ function BackPf() {
           <Box
             sx={{
               minWidth: 120,
-              maxWidth: "80ch",
+              maxWidth: 500,
               margin: "auto",
-              display: "flex",
             }}
           >
             <FormGroup>
@@ -282,6 +276,7 @@ function BackPf() {
             role={actorRole}
             name={selectedActor}
           />
+          <PlaceHolder />
         </>
       )}
     </div>

@@ -96,28 +96,16 @@ router.post("/actor/modify", auth({ block: true }), async (req, res) => {
   const { name, role, actorId } = req.body;
   if (!actorId) return res.status(400).json("Adat hiányzik");
 
-  const Pf2 = await Performance.findOne({ "actor._id": actorId }, "actor");
-  const newPf = Pf2.actor.map((p) => {
+  const Pf = await Performance.findOne({ "actor._id": actorId }, "actor");
+  Pf.actor.map((p) => {
     if (p._id == actorId) {
-      console.log("Ok");
       p.role = role;
       p.name = name;
     }
   });
-  await Pf2.save();
-  console.log(newPf);
-  //   Pf2.actor[0].set = (0, "csoki");
-  //   await Pf2.save();
-  //   console.log(Pf2.actor[0].role);
-  //   const newPf = await Performance.findOneAndUpdate(
-  //     { title: title, "actor._id": actorId },
-  //     {
-  //       "actor.$.name": name,
-  //       "actor.$.role": role,
-  //     }
-  //   );
-  //   if (!newPf) return res.sendStatus(400);
-  res.status(200).json(Pf2);
+  await Pf.save();
+  if (!Pf) return res.status(500).json("Hiba");
+  res.status(200).json(Pf);
 });
 
 router.post("/actor/delete", auth({ block: true }), async (req, res) => {
