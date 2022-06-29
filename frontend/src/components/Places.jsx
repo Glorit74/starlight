@@ -1,44 +1,76 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  tableCellClasses,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 import Place from "./Place";
 
-function Places({ place, date, time, isAdd }) {
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+    fontSize: 16,
+  },
+}));
+
+function Places({ isAdd, title, place, date, time }) {
   const { token, user } = useAuth();
   const { get, post } = toDoApi();
   const [places, setPlaces] = useState([]);
-  const [pfId, setPfId] = useState("");
+  const [placeId, setPlaceId] = useState("");
 
   const getPlace = async () => {
-    console.log("indul a getPlace");
-    const responsePLaces = await get("/place");
+    const responsePLaces = await get("/performance");
     const filteredPlace = await responsePLaces.data.filter(
-      (p) => p.place === place
+      (p) => p.title === title
     );
-    if (filteredPlace[0]?.place) {
-      setPlaces(filteredPlace[0].place);
-      setPfId(filteredPlace[0]._id);
+    // console.log(filteredPlace[0]?.venue, "venue");
+    if (filteredPlace[0]?.venue) {
+      setPlaces(filteredPlace[0].venue);
     }
-    console.log(place, filteredPlace[0], pfId);
   };
 
   useEffect(() => {
     getPlace();
-    console.log("Places useEffect");
-
+    // console.log(places);
     // eslint-disable-next-line
-  }, [place, date, time, isAdd]);
+  }, [places, date, time, isAdd]);
 
   return (
-    <>
-      kakaó
-      {/* {places.map((p) => (
-        <div key={p._id}>
-          <Place p={p} place={place} pfId={pfId} />
-        </div>
-      ))} */}
-    </>
+    <TableContainer
+      component={Paper}
+      sx={{ maxWidth: "80%" }}
+      aria-label="Venues table"
+    >
+      <Table>
+        {/* <caption>
+            Összefoglaló a színházi előadások helyszíneiről és időpontjairól
+          </caption> */}
+
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Helyszín</StyledTableCell>
+            <StyledTableCell>Dátum</StyledTableCell>
+            <StyledTableCell colSpan={2}>Időpont</StyledTableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {places.map((place) => (
+            <Place key={place._id} place={place} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

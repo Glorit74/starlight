@@ -16,6 +16,7 @@ import Select from "@mui/material/Select";
 import { ButtonGroup, FormGroup, FormHelperText } from "@mui/material";
 import Roles from "../components/Roles";
 import PlaceHolder from "../components/PlaceHolder";
+import Selection from "../api/Selection";
 
 function BackPf() {
   const { token } = useAuth();
@@ -91,6 +92,7 @@ function BackPf() {
 
   return (
     <div>
+      <Selection endpoint="place" param="name" label="Helyszín" />
       <h2>Előadások:</h2>
       {token && (
         <>
@@ -226,34 +228,38 @@ function BackPf() {
             }}
           >
             <FormGroup>
-              <InputLabel id="performance_label">Előadás:</InputLabel>
-              <Select
-                labelId="performance_label"
-                id="performance"
-                value={selectedPf}
-                label="Előadás:"
-                onChange={(e) => setSelectedPf(e.target.value)}
-              >
-                {performanceSelect.map((pf) => (
-                  <MenuItem key={pf._id} value={pf.title}>
-                    {pf.title}
-                  </MenuItem>
-                ))}
-              </Select>
-              <InputLabel id="selectedActor_label">Neve:</InputLabel>
-              <Select
-                labelId="selectedActor_label"
-                id="selectedActor"
-                value={selectedActor}
-                label="Neve:"
-                onChange={(e) => setSelectedActor(e.target.value)}
-              >
-                {actorSelect.map((a) => (
-                  <MenuItem key={a._id} value={a.name}>
-                    {a.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <FormControl>
+                <InputLabel id="performance_label">Előadás:</InputLabel>
+                <Select
+                  labelId="performance_label"
+                  id="performance"
+                  value={selectedPf}
+                  label={"Előadás:"}
+                  onChange={(e) => setSelectedPf(e.target.value)}
+                >
+                  {performanceSelect.map((pf) => (
+                    <MenuItem key={pf._id} value={pf.title}>
+                      {pf.title}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl>
+                <InputLabel id="selectedActor_label">Neve:</InputLabel>
+                <Select
+                  labelId="selectedActor_label"
+                  id="selectedActor"
+                  value={selectedActor}
+                  label="Neve:"
+                  onChange={(e) => setSelectedActor(e.target.value)}
+                >
+                  {actorSelect.map((a) => (
+                    <MenuItem key={a._id} value={a.name}>
+                      {a.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 label="Szerepe:"
                 color="primary"

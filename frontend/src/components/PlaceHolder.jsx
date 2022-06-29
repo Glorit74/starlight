@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
-import { FormGroup, TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import { Box, FormGroup, FormControl, TextField, Button } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 import Places from "./Places";
 
@@ -18,8 +16,12 @@ function PlaceHolder() {
     time: "",
   });
 
+  const [selectedPf, setSelectedPf] = useState("");
+  const [selectedPfId, setSelectedPfId] = useState("");
+  const [performanceSelect, setPerformanceSelect] = useState([]);
   const [placeSelect, setPlaceSelect] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setPlace((prevText) => {
@@ -27,24 +29,40 @@ function PlaceHolder() {
     });
   };
 
+  const getPerformance = async () => {
+    const responsePf = await get("/performance");
+    setPerformanceSelect(responsePf.data);
+  };
+
   const getPlaces = async () => {
     const responsePlaces = await get("/place");
     setPlaceSelect(responsePlaces.data);
-    // console.log(placeSelect);
   };
 
   const addVenue = async () => {
-    const responseVenu = await post("/place", {
-      place: selectedPlace,
-      date: place.date,
-      time: place.time,
-    });
+    setMessage("");
+    setSelectedPfId(performanceSelect.filter((p) => p.title === selectedPf));
+    console.log(selectedPfId[0]._id);
+
+    const responseVenue = await post(
+      `/performance/venue/?id=${selectedPfId[0]._id}`,
+      {
+        place: selectedPlace,
+        date: place.date,
+        time: place.time,
+      }
+    );
+
+    console.log(responseVenue);
+    if (responseVenue.status === 400) setMessage(responseVenue?.data);
+    if (responseVenue.status === 200) setMessage("Rözgítésre került");
+
     setIsAdd(!isAdd);
-    console.log("új helyszín", selectedPlace);
   };
 
   useEffect(() => {
     getPlaces();
+    getPerformance();
     // eslint-disable-next-line
   }, [isAdd]);
   return (
@@ -60,19 +78,38 @@ function PlaceHolder() {
             }}
           >
             <FormGroup>
-              {/* <InputLabel id="place_label">Helyszín:</InputLabel> */}
-              <Select
-                labelId="place_label"
-                id="place"
-                value={selectedPlace}
-                onChange={(e) => setSelectedPlace(e.target.value)}
-              >
-                {placeSelect.map((p) => (
-                  <MenuItem key={p._id} value={p.name}>
-                    {p.name}
-                  </MenuItem>
-                ))}
-              </Select>
+              <FormControl>
+                <InputLabel id="performance_label">Előadás:</InputLabel>
+                <Select
+                  id="performance"
+                  value={selectedPf}
+                  labelId="performance_label"
+                  label={"Előadás:"}
+                  onChange={(e) => setSelectedPf(e.target.value)}
+                >
+                  {performanceSelect.map((pf) => (
+                    <MenuItem key={pf._id} value={pf.title}>
+                      {pf.title}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl>
+                <InputLabel id="place_label">Helyszín:</InputLabel>
+                <Select
+                  labelId="place_label"
+                  label={"Helyszín"}
+                  id="place"
+                  value={selectedPlace}
+                  onChange={(e) => setSelectedPlace(e.target.value)}
+                >
+                  {placeSelect.map((p) => (
+                    <MenuItem key={p._id} value={p.name}>
+                      {p.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
               <TextField
                 label="Dátum:"
@@ -88,8 +125,8 @@ function PlaceHolder() {
                 type="time"
                 color="primary"
                 name="time"
-                defaultValue="19:00"
-                // value={place.time}
+                // defaultValue="19:00"
+                value={place.time}
                 onChange={handleChange}
               />
               <Button variant="contained" color="success" onClick={addVenue}>
@@ -97,11 +134,13 @@ function PlaceHolder() {
               </Button>
             </FormGroup>
           </Box>
+          <div>{message}</div>
           <Places
             isAdd={isAdd}
+            title={selectedPf}
             place={selectedPlace}
-            date={place.date}
-            time={place.time}
+            // date={place.date}
+            // time={place.time}
           />
         </>
       )}

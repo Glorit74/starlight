@@ -46,27 +46,26 @@ router.post("/", auth({ block: true }), async (req, res) => {
 });
 
 router.post("/venue", auth({ block: true }), async (req, res) => {
-  if (!req.body.title)
-    return res.status(400).json("Létező előadáshoz lehet helyszínt rögzíteni");
+  if (!req.query.id)
+    return res
+      .status(400)
+      .json("Csak létező előadáshoz lehet helyszínt rögzíteni");
 
-  let venue = {
-    place: req.body.place,
-    date: req.body.date,
-    time: req.body.time,
-  };
+  let venue = req.body;
+
   let existingVenue = await Performance.findOne({
-    "venue.place": req.body.place,
-    "venue.date": req.body.date,
-    "venue.time": req.body.time,
+    _id: req.query.id,
+    "venue.place": venue.place,
+    "venue.date": venue.date,
+    "venue.time": venue.time,
   });
   let newPf;
   if (!existingVenue) {
     newPf = await Performance.findOneAndUpdate(
-      { title: req.body.title },
+      { _id: req.query.id },
       { $push: { venue: venue } },
       { new: true }
     );
-    console.log("új", newPf);
   } else res.status(400).json("Rögzített esemény");
   res.status(200).json(newPf);
 });
