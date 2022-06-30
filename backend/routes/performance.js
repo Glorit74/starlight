@@ -70,6 +70,43 @@ router.post("/venue", auth({ block: true }), async (req, res) => {
   res.status(200).json(newPf);
 });
 
+router.post("/venue/modify", auth({ block: true }), async (req, res) => {
+  const { place, date, time, venueId } = req.body;
+  if (!venueId) return res.status(400).json("Adat hiányzik");
+
+  const pf = await Performance.findOne({ "venue._id": venueId });
+  //   console.log("found pf", pf);
+  pf.venue.map((p) => {
+    if (p._id == venueId) {
+      (p.place = place), (p.date = date), (p.time = time);
+    }
+  });
+  await pf.save();
+  if (!pf) return res.status(500).json("Hiba");
+  res.status(200).json(pf);
+});
+
+router.post("/venue/delete", auth({ block: true }), async (req, res) => {
+  const { performanceId, venueId } = req.body;
+  const pf = await Performance.findOneAndUpdate(
+    { _id: performanceId },
+    {
+      $pull: {
+        venue: { _id: venueId },
+      },
+    },
+    { new: true }
+  )
+    .then((pf) => {
+      //   console.log(pf);
+      res.status(200).json(pf);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(400);
+    });
+});
+
 router.post("/actor", auth({ block: true }), async (req, res) => {
   const { title, name, role } = req.body;
   if (!title || !name || !role) return res.status(400).json("Adat hiányzik");
@@ -120,7 +157,7 @@ router.post("/actor/delete", auth({ block: true }), async (req, res) => {
     { new: true }
   )
     .then((pf) => {
-      console.log(pf);
+      //   console.log(pf);
       res.status(200).json(pf);
     })
     .catch((err) => {

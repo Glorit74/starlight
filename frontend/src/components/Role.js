@@ -8,8 +8,6 @@ function Role({ r, title, pfId }) {
 
   const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState("");
-  const [originName, setOriginName] = useState(r.name);
-  const [originRole, setOriginRole] = useState(r.role);
   const [newName, setNewName] = useState(r.name);
   const [newRole, setNewRole] = useState(r.role);
 
@@ -18,7 +16,6 @@ function Role({ r, title, pfId }) {
   };
 
   const saveRole = async () => {
-    console.log(newName, newRole);
     const responseRole = await post("/performance/actor/modify", {
       actorId: r._id,
       name: newName,
@@ -29,8 +26,6 @@ function Role({ r, title, pfId }) {
       setIsError(true);
       setMessage(responseRole.statusText);
     } else {
-      setOriginName(newName);
-      setOriginRole(newRole);
       setIsUpdate(false);
     }
   };
@@ -46,7 +41,7 @@ function Role({ r, title, pfId }) {
   };
 
   useEffect(() => {
-    console.log(r);
+    // console.log(r);
   }, [isUpdate]);
 
   return (
@@ -99,7 +94,7 @@ function Role({ r, title, pfId }) {
         </Box>
       ) : (
         <Box>
-          {originName} - {originRole}
+          {newName} - {newRole}
           <ButtonGroup
             variant="contained"
             sx={{

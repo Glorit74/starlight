@@ -92,7 +92,7 @@ function BackPf() {
 
   return (
     <div>
-      <Selection endpoint="place" param="name" label="Helyszín" />
+      <Selection endpoint="place" label="Helyszín" />
       <h2>Előadások:</h2>
       {token && (
         <>
@@ -228,7 +228,7 @@ function BackPf() {
             }}
           >
             <FormGroup>
-              <FormControl>
+              <FormControl required>
                 <InputLabel id="performance_label">Előadás:</InputLabel>
                 <Select
                   labelId="performance_label"

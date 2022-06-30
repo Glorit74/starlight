@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 export const toDoApi = () => {
   const instance = axios.create({
@@ -16,6 +17,11 @@ export const toDoApi = () => {
       console.log("HTTP RESPONSE DATA: ", response?.data?.login);
       return response;
     } catch (err) {
+      if (err.response.status === 201) {
+        console.log("post error");
+        <Navigate to={"/login"} />;
+        localStorage.removeItem("token");
+      }
       console.log("POST error status: ", err?.response?.status);
       console.log("POST error data: ", err?.response?.data);
       return err?.response;

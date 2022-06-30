@@ -78,14 +78,17 @@ function PlaceHolder() {
             }}
           >
             <FormGroup>
-              <FormControl>
+              <FormControl required>
                 <InputLabel id="performance_label">Előadás:</InputLabel>
                 <Select
                   id="performance"
                   value={selectedPf}
                   labelId="performance_label"
                   label={"Előadás:"}
-                  onChange={(e) => setSelectedPf(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedPf(e.target.value);
+                    setMessage("");
+                  }}
                 >
                   {performanceSelect.map((pf) => (
                     <MenuItem key={pf._id} value={pf.title}>
@@ -94,7 +97,7 @@ function PlaceHolder() {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl>
+              <FormControl required>
                 <InputLabel id="place_label">Helyszín:</InputLabel>
                 <Select
                   labelId="place_label"

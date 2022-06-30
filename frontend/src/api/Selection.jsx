@@ -3,41 +3,44 @@ import { toDoApi } from "./toDoApi";
 import { useAuth } from "../providers/auth";
 import { FormControl, Select, MenuItem, InputLabel } from "@mui/material";
 
-function Selection({ endpoint, param, label }) {
+function Selection({ endpoint, label, defaultSelection }) {
   const { token } = useAuth();
   const { get } = toDoApi();
-  const [selection, setSelection] = useState([]);
-  const [selected, setSelected] = useState("");
+  const [menuItem, setMenuItem] = useState([]);
+  const [selected, setSelected] = useState({ defaultSelection });
 
-  const myVariable = "select." + param;
-  let myVariable2;
-  myVariable2 = `select.${param}`;
+  //   const myVariable = "select." + param;
+  //   let myVariable2;
+  //   myVariable2 = `select.${param}`;
 
   const getSelection = async () => {
     const responsePf = await get(`${endpoint}`);
-    setSelection(responsePf.data);
+    setMenuItem(responsePf.data);
+    console.log(menuItem);
   };
 
   useEffect(() => {
     getSelection();
-    // console.log(selection);
+
     // eslint-disable-next-line
   }, []);
   return (
-    <FormControl style={{ width: "80%", margin: "5px" }}>
+    <FormControl
+      style={{ minWidth: "20%", maxWidth: "40%", margin: "5px" }}
+      size="small"
+    >
       <InputLabel id="select_label">{label}</InputLabel>
       <Select
         labelId="select_label"
         id="select"
-        endpoint={selected}
+        value={selected}
         label={label}
         onChange={(e) => setSelected(e.target.value)}
+        autoWidth
       >
-        {selection.map((select) => (
-          <MenuItem key={select._id} value={myVariable}>
-            `select.[${param}]`
-            {myVariable}
-            {myVariable2}
+        {menuItem.map((select) => (
+          <MenuItem key={select._id} value={select.name}>
+            {select.name}
           </MenuItem>
         ))}
       </Select>

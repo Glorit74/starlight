@@ -26,7 +26,15 @@ function Places({ isAdd, title, place, date, time }) {
   const { token, user } = useAuth();
   const { get, post } = toDoApi();
   const [places, setPlaces] = useState([]);
-  const [placeId, setPlaceId] = useState("");
+  const [pfId, setPfId] = useState("");
+
+  const getPerformance = async () => {
+    const responsePf = await get("/performance");
+    const filteredPf = await responsePf.data.filter((pf) => pf.title === title);
+    if (filteredPf[0]?.venue) {
+      setPfId(filteredPf[0]._id);
+    }
+  };
 
   const getPlace = async () => {
     const responsePLaces = await get("/performance");
@@ -40,10 +48,11 @@ function Places({ isAdd, title, place, date, time }) {
   };
 
   useEffect(() => {
+    getPerformance();
     getPlace();
-    // console.log(places);
+    // console.log(title);
     // eslint-disable-next-line
-  }, [places, date, time, isAdd]);
+  }, [place, title, date, time, isAdd]);
 
   return (
     <TableContainer
@@ -66,7 +75,7 @@ function Places({ isAdd, title, place, date, time }) {
 
         <TableBody>
           {places.map((place) => (
-            <Place key={place._id} place={place} />
+            <Place key={place._id} place={place} pfId={pfId} />
           ))}
         </TableBody>
       </Table>
