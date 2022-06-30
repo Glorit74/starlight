@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
-import FormControl from "@mui/material/FormControl";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { ButtonGroup, FormGroup, FormHelperText } from "@mui/material";
+import {
+  Box,
+  FormGroup,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  TextField,
+  Button,
+} from "@mui/material";
 import Roles from "../components/Roles";
 import PlaceHolder from "../components/PlaceHolder";
 import Selection from "../api/Selection";
+import { useNavigate } from "react-router-dom";
 
 function BackPf() {
   const { token } = useAuth();
   const { post, get } = toDoApi();
+  const navigate = useNavigate();
 
   const [performance, setPerformance] = useState({
     title: "",
@@ -80,6 +80,10 @@ function BackPf() {
       role: actorRole,
     });
     setIsAdd(!isAdd);
+  };
+
+  const addActor = () => {
+    navigate("/backplace");
   };
 
   useEffect(() => {
@@ -259,6 +263,7 @@ function BackPf() {
                     </MenuItem>
                   ))}
                 </Select>
+                <Button onClick={addActor}>Új színész</Button>
               </FormControl>
               <TextField
                 label="Szerepe:"

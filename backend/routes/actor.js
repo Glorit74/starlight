@@ -6,7 +6,7 @@ const Actor = require("../models/actor");
 const { findOne, replaceOne } = require("../models/user");
 
 router.get("/", async (req, res) => {
-  const actor = await Actor.find({}, "name _id");
+  const actor = await Actor.find({});
   if (!actor) return res.status(404).json([]);
   res.status(200).json(actor);
 });
@@ -34,10 +34,22 @@ router.get("/title", async (req, res) => {
   res.status(200).json(actor);
 });
 
-router.post("/", async (req, res) => {
-  const { name, description, picture, id } = req.body;
+router.post("/", auth({ block: true }), async (req, res) => {
+  const {
+    name,
+    description,
+    picture,
+    id,
+    isActive,
+    award_title,
+    award_year,
+    role_title,
+    role_role,
+  } = req.body;
   if (!name) return res.status(400).json("Név megadása szükséges");
   let newActor;
+  let award = { title: award_title, year: award_year };
+  let role = { title: role_title, role: role_role };
 
   const actor = await Actor.findOne({ name: name });
   if (!actor) {
@@ -46,6 +58,9 @@ router.post("/", async (req, res) => {
       description: description,
       picture: picture,
     });
+    newActor.awards.push(award);
+    newActor.roles.push(role);
+    await newActor.save();
   } else if (actor && !id)
     return res.status(400).json("Több azonos nevű színész, id!!");
   else {
@@ -53,7 +68,12 @@ router.post("/", async (req, res) => {
       {
         id: id,
       },
-      { name: name, description: description, picture: picture },
+      {
+        name: name,
+        description: description,
+        picture: picture,
+        isActive: isActive,
+      },
       { new: true }
     );
   }
@@ -68,11 +88,7 @@ router.post("/awards", auth({ block: true }), async (req, res) => {
 
   const actor = await Actor.findById(id);
   if (!actor) {
-    newActorAward = await Actor.create({
-      name: name,
-      awards: award,
-    });
-    return res.status(200).json(newActorAward);
+    return res.status(400).json("Nincs még ilyen nevű mentett színész");
   } else {
     const existingAward = await Actor.find({
       _id: id,
@@ -88,7 +104,7 @@ router.post("/awards", auth({ block: true }), async (req, res) => {
   }
 });
 
-router.post("/role", async (req, res) => {
+router.post("/role", auth({ block: true }), async (req, res) => {
   const { name, title, role, id } = req.body;
   const newRole = { title: title, role: role };
   // only in DB existed actor can have roles
@@ -111,7 +127,7 @@ router.post("/role", async (req, res) => {
   } else return res.status(400).json(existingRole);
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", auth({ block: true }), async (req, res) => {
   console.log(req.params);
   //   res.send("Got a DELETE request at /user");
   Actor.findOneAndDelete({
@@ -122,7 +138,7 @@ router.delete("/delete/:id", async (req, res) => {
   });
 });
 
-router.delete("/role/delete", async (req, res) => {
+router.delete("/role/delete", auth({ block: true }), async (req, res) => {
   const { actorId, roleId } = req.body;
 
   const actor = await Actor.findOneAndUpdate(

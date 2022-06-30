@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
+import { useNavigate } from "react-router-dom";
 import { Box, FormGroup, FormControl, TextField, Button } from "@mui/material";
 import { Select, MenuItem, InputLabel } from "@mui/material";
 import Places from "./Places";
@@ -8,6 +9,7 @@ import Places from "./Places";
 function PlaceHolder() {
   const { token } = useAuth();
   const { post, get } = toDoApi();
+  const navigate = useNavigate();
   const [isAdd, setIsAdd] = useState(false);
 
   const [place, setPlace] = useState({
@@ -58,6 +60,10 @@ function PlaceHolder() {
     if (responseVenue.status === 200) setMessage("Rözgítésre került");
 
     setIsAdd(!isAdd);
+  };
+
+  const addPlace = () => {
+    navigate("/backplace");
   };
 
   useEffect(() => {
@@ -114,7 +120,7 @@ function PlaceHolder() {
                     </MenuItem>
                   ))}
                 </Select>
-                <Button>Új helyszín</Button>
+                <Button onClick={addPlace}>Új helyszín</Button>
               </FormControl>
 
               <TextField

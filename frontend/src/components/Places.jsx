@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
 import {
   Table,
@@ -23,8 +22,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 function Places({ isAdd, title, place, date, time }) {
-  const { token, user } = useAuth();
-  const { get, post } = toDoApi();
+  const { get } = toDoApi();
   const [places, setPlaces] = useState([]);
   const [pfId, setPfId] = useState("");
 
