@@ -98,7 +98,9 @@ function PlaceHolder() {
                 </Select>
               </FormControl>
               <FormControl required>
-                <InputLabel id="place_label">Helyszín:</InputLabel>
+                <InputLabel style={{ display: "inline" }} id="place_label">
+                  Helyszín:
+                </InputLabel>
                 <Select
                   labelId="place_label"
                   label={"Helyszín"}
@@ -112,6 +114,7 @@ function PlaceHolder() {
                     </MenuItem>
                   ))}
                 </Select>
+                <Button>Új helyszín</Button>
               </FormControl>
 
               <TextField

@@ -28,13 +28,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 function Place({ place, pfId }) {
-  const { get, post } = toDoApi();
+  const { post } = toDoApi();
   const [isUpdate, setIsUpdate] = useState(true);
   const [newVenue, setNewVenue] = useState({
     place: place.place,
     date: place.date,
     time: place.time,
   });
+  const [selected, setSelected] = useState(newVenue.place);
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
@@ -47,20 +48,19 @@ function Place({ place, pfId }) {
   };
 
   const savePlace = async () => {
-    console.log("kezdet", place, newVenue);
+    console.log(newVenue, selected);
     const responseSave = await post("performance/venue/modify", {
       venueId: place._id,
-      place: newVenue.place,
+      place: selected,
       date: newVenue.date,
       time: newVenue.time,
     });
-    if (responseSave?.status === 400) {
-      setMessage(responseSave.statusText);
-    } else {
-      console.log(responseSave);
-
-      setIsUpdate(true);
-    }
+    // if (responseSave?.status === 400) {
+    //   setMessage(responseSave.statusText);
+    // } else {
+    setIsUpdate(true);
+    console.log("save", responseSave);
+    // }
   };
 
   const deleteVenue = async () => {
@@ -68,6 +68,7 @@ function Place({ place, pfId }) {
       performanceId: pfId,
       venueId: place._id,
     });
+    setIsUpdate(true);
   };
 
   useEffect(() => {
@@ -80,7 +81,7 @@ function Place({ place, pfId }) {
           key={place._id}
           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
         >
-          <StyledTableCell>{newVenue.place}</StyledTableCell>
+          <StyledTableCell>{selected}</StyledTableCell>
           <StyledTableCell>{newVenue.date}</StyledTableCell>
           <StyledTableCell>{newVenue.time}</StyledTableCell>
           <StyledTableCell>
@@ -113,7 +114,9 @@ function Place({ place, pfId }) {
             <Selection
               size="small"
               endpoint="place"
-              defaultSelection={place.place}
+              defaultSelection={newVenue.place}
+              selected={selected}
+              setSelected={setSelected}
             />
           </StyledTableCell>
           <StyledTableCell>

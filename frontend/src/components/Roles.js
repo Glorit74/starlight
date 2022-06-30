@@ -17,7 +17,6 @@ function Roles({ isAdd, title, name, role }) {
       setRoles(filteredPf[0].actor);
       setPfId(filteredPf[0]._id);
     }
-    console.log(title, filteredPf[0], pfId);
   };
 
   useEffect(() => {

@@ -31,7 +31,6 @@ function Role({ r, title, pfId }) {
   };
 
   const deleteRole = async () => {
-    console.log("valami", pfId, r._id);
     const responseDeleteRole = await post("/performance/actor/delete", {
       performanceId: pfId,
       actorId: r._id,
