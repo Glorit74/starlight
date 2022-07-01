@@ -104,6 +104,37 @@ router.post("/awards", auth({ block: true }), async (req, res) => {
   }
 });
 
+router.post("/awards/modify", auth({ block: true }), async (req, res) => {
+  const { awardId, title, year } = req.body;
+  if (!awardId) return res.status(400).json("Adat hiányzik");
+
+  const actor = await Actor.findOne({ "awards._id": awardId });
+  actor.awards.map((a) => {
+    if (a._id == awardId) {
+      (a.title = title), (a.year = year);
+    }
+  });
+  await actor.save();
+  if (!actor) return res.status(500).json("Hiba");
+  res.status(200).json(actor);
+});
+
+router.post("/awards/delete", auth({ block: true }), async (req, res) => {
+  const actor = await Actor.findOneAndUpdate(
+    { "awards._id": req.query.awardId },
+    {
+      $pull: {
+        awards: { _id: req.query.awardId },
+      },
+    },
+    { new: true }
+  )
+    .then((award) => console.log(award))
+    .catch((err) => console.log(err));
+
+  res.sendStatus(200);
+});
+
 router.post("/role", auth({ block: true }), async (req, res) => {
   const { name, title, role, id } = req.body;
   const newRole = { title: title, role: role };

@@ -15,7 +15,7 @@ import Award from "./Award";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.gray,
+    backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
     fontSize: 16,
   },
@@ -27,12 +27,11 @@ function Awards({ name }) {
   const [actorId, setActorId] = useState("");
 
   const getActor = async () => {
-    console.log("getActor starts");
     const responseActor = await get("/actor");
     const filteredActor = await responseActor.data.filter(
       (actor) => actor.name === name
     );
-    if (filteredActor) {
+    if (filteredActor[0]) {
       setActorId(filteredActor[0]._id);
       setAwards(filteredActor[0].awards);
     }
@@ -46,31 +45,33 @@ function Awards({ name }) {
 
   return (
     <div>
-      <TableContainer
-        component={Paper}
-        sx={{ maxWidth: "80%" }}
-        aria-label="Venues table"
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Díj megnevezése</StyledTableCell>
-              <StyledTableCell colSpan={2}>Átadás éve</StyledTableCell>
-            </TableRow>
-          </TableHead>
+      {actorId && (
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: "80%" }}
+          aria-label="Venues table"
+        >
+          <Table>
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Díj megnevezése</StyledTableCell>
+                <StyledTableCell colSpan={2}>Átadás éve</StyledTableCell>
+              </TableRow>
+            </TableHead>
 
-          <TableBody>
-            {/* {awards.map((a) => (
-              <Award
-                key={a._id}
-                title={a.title}
-                year={a.year}
-                awardsId={a._id}
-              />
-            ))} */}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            <TableBody>
+              {awards.map((a) => (
+                <Award
+                  key={a._id}
+                  title={a.title}
+                  year={a.year}
+                  awardId={a._id}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </div>
   );
 }

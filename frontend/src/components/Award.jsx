@@ -43,9 +43,28 @@ function Award({ title, year, awardId }) {
     setIsUpdate(!isUpdate);
   };
 
-  const saveAward = async () => {};
+  const saveAward = async () => {
+    const responseSave = await post("actor/awards/modify", {
+      awardId: awardId,
+      title: newAward.title,
+      year: newAward.year,
+    });
+    // if (responseSave?.status === 400) {
+    //   setMessage(responseSave.statusText);
+    // } else {
+    setIsUpdate(true);
+    console.log("save", responseSave);
+    // }
+  };
 
-  const deleteAward = async () => {};
+  const deleteAward = async () => {
+    console.log("delete st", awardId);
+    const responseDelete = await post(
+      `actor/awards/delete/?awardId=${awardId}`
+    );
+    console.log("delete", responseDelete);
+  };
+
   return (
     <>
       {isUpdate ? (
@@ -85,8 +104,7 @@ function Award({ title, year, awardId }) {
             <TextField
               size="small"
               color="warning"
-              name="date"
-              type="date"
+              name="title"
               value={newAward.title}
               onChange={handleChange}
             />
@@ -95,8 +113,7 @@ function Award({ title, year, awardId }) {
             <TextField
               size="small"
               color="warning"
-              name="time"
-              type="time"
+              name="year"
               value={newAward.year}
               onChange={handleChange}
             />

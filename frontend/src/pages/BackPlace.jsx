@@ -107,44 +107,45 @@ function BackPlace({ name }) {
     <>
       <h2>Új színművész rögzítése:</h2>
       {token && (
-        <Box
-          component="form"
-          sx={{
-            "& > :not(style)": { m: 1, width: "80ch" },
+        <>
+          <Box
+            component="form"
+            sx={{
+              "& > :not(style)": { m: 1, width: "80ch" },
 
-            backgroundColor: "lightgray",
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <FormControl variant="filled">
-            <TextField
-              label="Színész neve"
-              helperText="kötelezően megadandó adat"
-              color="primary"
-              required
-              name="name"
-              value={actor.name}
-              onChange={handleChange}
-            />
-            <TextField
-              multiline
-              label="Leírás"
-              color="primary"
-              name="description"
-              value={actor.description}
-              onChange={handleChange}
-            />
-            <TextField
-              multiline
-              label="Fénykép"
-              color="primary"
-              name="picture"
-              value={actor.picture}
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl>
+              backgroundColor: "lightgray",
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <FormControl variant="filled">
+              <TextField
+                label="Színész neve"
+                helperText="kötelezően megadandó adat"
+                color="primary"
+                required
+                name="name"
+                value={actor.name}
+                onChange={handleChange}
+              />
+              <TextField
+                multiline
+                label="Leírás"
+                color="primary"
+                name="description"
+                value={actor.description}
+                onChange={handleChange}
+              />
+              <TextField
+                multiline
+                label="Fénykép"
+                color="primary"
+                name="picture"
+                value={actor.picture}
+                onChange={handleChange}
+              />
+            </FormControl>
+
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={handleCheck} />}
               label="Aktív tag"
@@ -165,6 +166,14 @@ function BackPlace({ name }) {
                 color="primary"
               >
                 Új színész
+              </Button>
+              <Button
+                sx={{ maxWidth: "120px", m: "10px" }}
+                onClick={(e) => navigate("/backpf")}
+                variant="contained"
+                color="info"
+              >
+                Vissza
               </Button>
             </ButtonGroup>
             <h2>Új díj rögzítése:</h2>
@@ -210,52 +219,63 @@ function BackPlace({ name }) {
                 Új díj
               </Button>
             </FormControl>
-          </FormControl>
-          <h2>Új szerep rögzítése:</h2>
-          <FormControl>
-            <InputLabel id="selectedActor_label">Színész neve:</InputLabel>
-            <Select
-              labelId="selectedActor_label"
-              id="selectedActor"
-              value={selectedActor}
-              label="Színész neve:"
-              onChange={(e) => setSelectedActor(e.target.value)}
-            >
-              {actorSelect.map((a) => (
-                <MenuItem key={a._id} value={a.name}>
-                  {a.name}
-                </MenuItem>
-              ))}
-            </Select>
-            <TextField
-              label="Színdarab"
-              color="primary"
-              name="role_title"
-              value={actor.role_title}
-              onChange={handleChange}
-            />
-            <TextField
-              label="Szerep"
-              color="primary"
-              name="role_role"
-              value={actor.role_role}
-              onChange={handleChange}
-            />
-            <Button
-              sx={{ maxWidth: "120px", m: "10px" }}
-              onClick={saveRole}
-              variant="contained"
-              color="primary"
-              disabled={!actorId ? true : false}
-            >
-              Új szerep
-            </Button>
-          </FormControl>
-        </Box>
+          </Box>
+          <Box>
+            <Awards name={selectedActor} />
+          </Box>
+          <Box
+            component="form"
+            sx={{
+              "& > :not(style)": { m: 1, width: "80ch" },
+
+              backgroundColor: "lightgray",
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <h2>Új szerep rögzítése:</h2>
+            <FormControl>
+              <InputLabel id="selectedActor_label">Színész neve:</InputLabel>
+              <Select
+                labelId="selectedActor_label"
+                id="selectedActor"
+                value={selectedActor}
+                label="Színész neve:"
+                onChange={(e) => setSelectedActor(e.target.value)}
+              >
+                {actorSelect.map((a) => (
+                  <MenuItem key={a._id} value={a.name}>
+                    {a.name}
+                  </MenuItem>
+                ))}
+              </Select>
+              <TextField
+                label="Színdarab"
+                color="primary"
+                name="role_title"
+                value={actor.role_title}
+                onChange={handleChange}
+              />
+              <TextField
+                label="Szerep"
+                color="primary"
+                name="role_role"
+                value={actor.role_role}
+                onChange={handleChange}
+              />
+              <Button
+                sx={{ maxWidth: "120px", m: "10px" }}
+                onClick={saveRole}
+                variant="contained"
+                color="primary"
+                disabled={!actorId ? true : false}
+              >
+                Új szerep
+              </Button>
+            </FormControl>
+          </Box>
+        </>
       )}
-      <Box>
-        <Awards name={selectedActor} />
-      </Box>
     </>
   );
 }
