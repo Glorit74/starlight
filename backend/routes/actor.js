@@ -3,7 +3,6 @@ const http = require("../utils/http");
 const auth = require("../middlewares/auth");
 const User = require("../models/user");
 const Actor = require("../models/actor");
-const { findOne, replaceOne } = require("../models/user");
 
 router.get("/", async (req, res) => {
   const actor = await Actor.find({});
@@ -11,45 +10,10 @@ router.get("/", async (req, res) => {
   res.status(200).json(actor);
 });
 
-router.get("/title", async (req, res) => {
-  const title = req.body.title;
-  console.log(title);
-  if (!title)
-    return res.status(400).json("Ilyen című alőadás még nincs rögzítve");
-
-  const actor = await Actor.find(
-    {
-      "roles.title": new RegExp(`^${req.body.title}`, "i"),
-      // new RegExp(`^${req.query.title}`, "i")
-    },
-
-    "name -_id"
-  );
-
-  //   const actor = Actor.find({
-  //     "roles.title": new RegExp(`^${req.query.title}`, "i"),
-  //   });
-
-  if (!actor) return res.status(404).json([]);
-  res.status(200).json(actor);
-});
-
 router.post("/", auth({ block: true }), async (req, res) => {
-  const {
-    name,
-    description,
-    picture,
-    id,
-    isActive,
-    award_title,
-    award_year,
-    role_title,
-    role_role,
-  } = req.body;
+  const { name, description, picture, id, isActive } = req.body;
   if (!name) return res.status(400).json("Név megadása szükséges");
   let newActor;
-  let award = { title: award_title, year: award_year };
-  let role = { title: role_title, role: role_role };
 
   const actor = await Actor.findOne({ name: name });
   if (!actor) {
@@ -58,9 +22,6 @@ router.post("/", auth({ block: true }), async (req, res) => {
       description: description,
       picture: picture,
     });
-    newActor.awards.push(award);
-    newActor.roles.push(role);
-    await newActor.save();
   } else if (actor && !id)
     return res.status(400).json("Több azonos nevű színész, id!!");
   else {
@@ -78,7 +39,8 @@ router.post("/", auth({ block: true }), async (req, res) => {
     );
   }
   if (!newActor) return res.status(500).json([]);
-  res.status(200).json(newActor);
+  const allActor = await Actor.find({});
+  res.status(200).json(allActor);
 });
 
 router.post("/awards", auth({ block: true }), async (req, res) => {
@@ -99,9 +61,10 @@ router.post("/awards", auth({ block: true }), async (req, res) => {
     if (!existingAward.length) {
       actor.awards.push(award);
       await actor.save();
-      res.status(200).json(actor);
-    } else return res.status(400).json(existingAward);
+    } else return res.status(400).json("Már mentett díj");
   }
+  const allActor = await Actor.find({});
+  res.status(200).json(allActor);
 });
 
 router.post("/awards/modify", auth({ block: true }), async (req, res) => {
@@ -109,6 +72,7 @@ router.post("/awards/modify", auth({ block: true }), async (req, res) => {
   if (!awardId) return res.status(400).json("Adat hiányzik");
 
   const actor = await Actor.findOne({ "awards._id": awardId });
+  if (!actor) return res.status(400).json("Nincs ilyen elmentett színész");
   actor.awards.map((a) => {
     if (a._id == awardId) {
       (a.title = title), (a.year = year);
@@ -116,7 +80,8 @@ router.post("/awards/modify", auth({ block: true }), async (req, res) => {
   });
   await actor.save();
   if (!actor) return res.status(500).json("Hiba");
-  res.status(200).json(actor);
+  const allActor = await Actor.find({});
+  res.status(200).json("allActor");
 });
 
 router.post("/awards/delete", auth({ block: true }), async (req, res) => {
@@ -131,8 +96,8 @@ router.post("/awards/delete", auth({ block: true }), async (req, res) => {
   )
     .then((award) => console.log(award))
     .catch((err) => console.log(err));
-
-  res.sendStatus(200);
+  const allActor = await Actor.find({});
+  res.status(200).json("allActor");
 });
 
 router.post("/role", auth({ block: true }), async (req, res) => {

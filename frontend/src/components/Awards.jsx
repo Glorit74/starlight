@@ -21,57 +21,52 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-function Awards({ name }) {
+function Awards({ name, id }) {
   const { get } = toDoApi();
   const [awards, setAwards] = useState([]);
-  const [actorId, setActorId] = useState("");
 
   const getActor = async () => {
     const responseActor = await get("/actor");
-    const filteredActor = await responseActor.data.filter(
-      (actor) => actor.name === name
+    // console.log(responseActor, id, name);
+    const filteredActor = await responseActor?.data.filter(
+      (actor) => actor._id === id
     );
-    if (filteredActor[0]) {
-      setActorId(filteredActor[0]._id);
-      setAwards(filteredActor[0].awards);
-    }
+    setAwards(filteredActor[0].awards);
   };
 
   useEffect(() => {
     getActor();
-
+    // console.log(awards.length, "hossz");
     // eslint-disable-next-line
-  }, [name]);
+  }, [id, awards]);
 
   return (
     <div>
-      {actorId && (
-        <TableContainer
-          component={Paper}
-          sx={{ maxWidth: "80%" }}
-          aria-label="Venues table"
-        >
-          <Table>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Díj megnevezése</StyledTableCell>
-                <StyledTableCell colSpan={2}>Átadás éve</StyledTableCell>
-              </TableRow>
-            </TableHead>
+      <TableContainer
+        component={Paper}
+        sx={{ maxWidth: "80%" }}
+        aria-label="Venues table"
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Díj megnevezése</StyledTableCell>
+              <StyledTableCell colSpan={2}>Átadás éve</StyledTableCell>
+            </TableRow>
+          </TableHead>
 
-            <TableBody>
-              {awards.map((a) => (
-                <Award
-                  key={a._id}
-                  title={a.title}
-                  year={a.year}
-                  awardId={a._id}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+          <TableBody>
+            {awards.map((a) => (
+              <Award
+                key={a._id}
+                title={a.title}
+                year={a.year}
+                awardId={a._id}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }

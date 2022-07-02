@@ -16,13 +16,13 @@ import {
 } from "@mui/material";
 import Awards from "../components/Awards";
 
-function BackPlace({ name }) {
+function BackPlace() {
   const { token } = useAuth();
   const { post, get } = toDoApi();
   const navigate = useNavigate();
 
   const [actor, setActor] = useState({
-    name: name ? name : "",
+    name: "",
     description: "",
     award_title: "",
     award_year: "",
@@ -32,17 +32,16 @@ function BackPlace({ name }) {
   });
   const [checked, setChecked] = useState(true);
   const [actorId, setActorId] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
   const [selectedActor, setSelectedActor] = useState("");
   const [actorSelect, setActorSelect] = useState([]);
-  const [awardMessage, setAwareMessage] = useState("");
+  const [awardMessage, setAwardMessage] = useState("");
+  const [roleMessage, setRoleMessage] = useState("");
 
   const handleChange = (e) => {
     setActor((prevText) => {
       return { ...prevText, [e.target.name]: e.target.value };
     });
   };
-
   const handleCheck = (event) => {
     setChecked(event.target.checked);
   };
@@ -57,6 +56,12 @@ function BackPlace({ name }) {
   const getActors = async () => {
     const responseActors = await get("/actor");
     setActorSelect(responseActors.data);
+    if (selectedActor && actorSelect.length !== 0) {
+      const filteredActor = await responseActors.data.filter(
+        (actor) => actor.name === selectedActor
+      );
+      if (filteredActor) setActorId(filteredActor[0]._id);
+    }
   };
 
   const saveActor = async () => {
@@ -64,29 +69,34 @@ function BackPlace({ name }) {
       name: actor.name,
       description: actor.description,
       picture: actor.picture,
-      //   award_title: actor.award_title,
-      //   award_year: actor.award_year,
-      //   role_title: actor.role_title,
-      //   role_role: actor.role_role,
       isActive: checked,
     });
-    getActors();
+    console.log("resposne", responseActor);
+    // if (responseActor) setActorSelect(responseActor.data);
   };
 
-  const saveAward = async () => {
+  const saveNewAward = async () => {
+    // setAwardMessage("");
     let filteredActor = actorSelect.filter((a) => a.name === selectedActor);
     setActorId(filteredActor[0]._id);
+
     const responseAward = await post("actor/awards", {
       name: selectedActor,
       title: actor.award_title,
       year: actor.award_year,
       id: actorId,
     });
-    if (responseAward.status === 400) setAwareMessage(responseAward.statusText);
-    console.log(responseAward);
+    if (responseAward?.data && responseAward.satus === 200) {
+      setActorSelect(responseAward.data);
+    }
+    if (responseAward.status === 400) {
+      setAwardMessage(responseAward.data);
+    } else {
+      setAwardMessage("Mentés sikeresen megtörtént");
+    }
   };
 
-  const saveRole = async () => {
+  const saveNewRole = async () => {
     let filteredActor = actorSelect.filter((a) => a.name === selectedActor);
     setActorId(filteredActor[0]._id);
     const responseRole = await post("actor/role", {
@@ -95,13 +105,13 @@ function BackPlace({ name }) {
       role: actor.role_role,
       id: actorId,
     });
-    if (responseRole.status === 400) setAwareMessage(responseRole.statusText);
-    console.log(responseRole);
+    if (responseRole.status === 400) setRoleMessage(responseRole.date);
+    else setRoleMessage("Mentés sikeresen megtörtént");
   };
 
   useEffect(() => {
     getActors();
-  }, []);
+  }, [actorSelect, selectedActor]);
 
   return (
     <>
@@ -169,7 +179,9 @@ function BackPlace({ name }) {
               </Button>
               <Button
                 sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={(e) => navigate("/backpf")}
+                onClick={(e) => {
+                  navigate("/backpf");
+                }}
                 variant="contained"
                 color="info"
               >
@@ -211,18 +223,16 @@ function BackPlace({ name }) {
               <div>{awardMessage}</div>
               <Button
                 sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={saveAward}
+                onClick={saveNewAward}
                 variant="contained"
                 color="primary"
-                // disabled={!actorId ? true : false}
+                disabled={!actorId ? true : false}
               >
                 Új díj
               </Button>
             </FormControl>
           </Box>
-          <Box>
-            <Awards name={selectedActor} />
-          </Box>
+          <Box>{actorId && <Awards name={selectedActor} id={actorId} />}</Box>
           <Box
             component="form"
             sx={{
@@ -265,7 +275,7 @@ function BackPlace({ name }) {
               />
               <Button
                 sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={saveRole}
+                onClick={saveNewRole}
                 variant="contained"
                 color="primary"
                 disabled={!actorId ? true : false}

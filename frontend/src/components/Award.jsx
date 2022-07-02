@@ -33,6 +33,7 @@ function Award({ title, year, awardId }) {
     title: title,
     year: year,
   });
+  const [myAwardId, setmyAwardId] = useState(awardId);
 
   const handleChange = (e) => {
     setNewAward((prevText) => {
@@ -49,11 +50,11 @@ function Award({ title, year, awardId }) {
       title: newAward.title,
       year: newAward.year,
     });
+    console.log("save", responseSave);
     // if (responseSave?.status === 400) {
     //   setMessage(responseSave.statusText);
     // } else {
-    setIsUpdate(true);
-    console.log("save", responseSave);
+    // setIsUpdate(true);
     // }
   };
 
@@ -64,6 +65,8 @@ function Award({ title, year, awardId }) {
     );
     console.log("delete", responseDelete);
   };
+
+  useEffect(() => {}, [myAwardId]);
 
   return (
     <>
