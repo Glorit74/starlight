@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../providers/auth";
-import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+// import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
+// import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
 function Navbar() {
   const { auth, token, logout } = useAuth();
@@ -26,6 +26,7 @@ function Navbar() {
           <>
             <Link to="/backpf">Előadások</Link>
             <Link to="/backplace">Helyszínek</Link>
+            <Link to="/backactor">Színművészek</Link>
             <button onClick={logout}>
               {/* <LoginOutlinedIcon /> */}Log out
             </button>

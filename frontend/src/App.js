@@ -11,6 +11,7 @@ import Place from "./pages/Place";
 import Actor from "./pages/Actor";
 import About from "./pages/About";
 import BackPf from "./pages/BackPf";
+import BackActor from "./pages/BackActor";
 import BackPlace from "./pages/BackPlace";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -50,6 +51,14 @@ function App() {
           element={
             <Protected key={3}>
               <BackPlace />
+            </Protected>
+          }
+        />
+        <Route
+          path="/backactor"
+          element={
+            <Protected key={3}>
+              <BackActor />
             </Protected>
           }
         />

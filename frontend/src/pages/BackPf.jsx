@@ -263,7 +263,9 @@ function BackPf() {
                     </MenuItem>
                   ))}
                 </Select>
-                <Button onClick={addActor}>Új színész</Button>
+                <Button onClick={(e) => navigate("/backplace")}>
+                  Új színész
+                </Button>
               </FormControl>
               <TextField
                 label="Szerepe:"

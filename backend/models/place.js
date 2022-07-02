@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 const placeSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  shortName: { type: String, maxLength: 30 },
   address: {
-    post_code: { type: Number, minLength: 4, maxLength: 4 },
+    zip: { type: Number, min: 1000, max: 9999 },
     city: { type: String, required: true },
     street: String,
   },

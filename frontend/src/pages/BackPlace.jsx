@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,28 +16,31 @@ import {
 import Awards from "../components/Awards";
 
 function BackPlace() {
-  const { token } = useAuth();
   const { post, get } = toDoApi();
   const navigate = useNavigate();
 
-  const [actor, setActor] = useState({
+  const [place, setPlace] = useState({
+    id: "",
     name: "",
-    description: "",
-    award_title: "",
-    award_year: "",
+    shortName: "",
+    zip: "",
+    city: "",
+    street: "",
+    email: "",
+    phone: "",
+    mobile: "",
+    website: "",
     picture: "",
-    role_title: "",
-    role_role: "",
+    description: "",
   });
   const [checked, setChecked] = useState(true);
-  const [actorId, setActorId] = useState("");
-  const [selectedActor, setSelectedActor] = useState("");
-  const [actorSelect, setActorSelect] = useState([]);
-  const [awardMessage, setAwardMessage] = useState("");
-  const [roleMessage, setRoleMessage] = useState("");
+  const [placeId, setPlaceId] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState("");
+  const [placeSelect, setPlaceSelect] = useState([]);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    setActor((prevText) => {
+    setPlace((prevText) => {
       return { ...prevText, [e.target.name]: e.target.value };
     });
   };
@@ -48,244 +50,189 @@ function BackPlace() {
   //clear input fields
 
   const handleNew = (e) => {
-    setActor((prevText) => {
+    setPlace((prevText) => {
       return { ...prevText, [e.target.name]: "" };
     });
   };
-
-  const getActors = async () => {
-    const responseActors = await get("/actor");
-    setActorSelect(responseActors.data);
-    if (selectedActor && actorSelect.length !== 0) {
-      const filteredActor = await responseActors.data.filter(
-        (actor) => actor.name === selectedActor
+  //   console.log(placeId ? placeId : "még nincs");
+  const getPlaces = async () => {
+    const responsePlaces = await get("/place");
+    setPlaceSelect(responsePlaces.data);
+    if (selectedPlace && placeSelect.length !== 0) {
+      const filteredPlace = await responsePlaces.data.filter(
+        (place) => place.name === selectedPlace
       );
-      if (filteredActor) setActorId(filteredActor[0]._id);
+      if (filteredPlace) setPlaceId(filteredPlace[0]._id);
     }
   };
 
-  const saveActor = async () => {
-    const responseActor = await post("/actor", {
-      name: actor.name,
-      description: actor.description,
-      picture: actor.picture,
-      isActive: checked,
-    });
-    console.log("resposne", responseActor);
-    // if (responseActor) setActorSelect(responseActor.data);
+  const savePlace = async () => {
+    console.log("id", placeId);
+    //   const responsePlace = await post("/place", {
+    //       id: placeId ? placeId : null,
+    //       name: place.name,
+    //       shortName: place.shortName,
+    //       zip: place.zip,
+    //       city: place.city,
+    //       street: place.street,
+    //       email: place.email,
+    //       phone: place.phone,
+    //       mobile: place.mobile,
+    //       website: place.website,
+    //       picture: place.picture,
+    //       description: place.description,
+    //       isParking: place.isParking,
+    //     });
+    //     console.log("resposne", responsePlace);
+    // if (responsePlace) setPlaceSelect(responsePlace.data);
   };
-
-  const saveNewAward = async () => {
-    // setAwardMessage("");
-    let filteredActor = actorSelect.filter((a) => a.name === selectedActor);
-    setActorId(filteredActor[0]._id);
-
-    const responseAward = await post("actor/awards", {
-      name: selectedActor,
-      title: actor.award_title,
-      year: actor.award_year,
-      id: actorId,
-    });
-    if (responseAward?.data && responseAward.satus === 200) {
-      setActorSelect(responseAward.data);
-    }
-    if (responseAward.status === 400) {
-      setAwardMessage(responseAward.data);
-    } else {
-      setAwardMessage("Mentés sikeresen megtörtént");
-    }
-  };
-
-  const saveNewRole = async () => {
-    let filteredActor = actorSelect.filter((a) => a.name === selectedActor);
-    setActorId(filteredActor[0]._id);
-    const responseRole = await post("actor/role", {
-      name: selectedActor,
-      title: actor.role_title,
-      role: actor.role_role,
-      id: actorId,
-    });
-    if (responseRole.status === 400) setRoleMessage(responseRole.date);
-    else setRoleMessage("Mentés sikeresen megtörtént");
-  };
-
   useEffect(() => {
-    getActors();
-  }, [actorSelect, selectedActor]);
+    getPlaces();
+  }, [placeSelect, selectedPlace, place]);
 
   return (
     <>
-      <h2>Új színművész rögzítése:</h2>
-      {token && (
-        <>
-          <Box
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "80ch" },
+      <h2>Új helyszín rögzítése:</h2>
 
-              backgroundColor: "lightgray",
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <FormControl variant="filled">
-              <TextField
-                label="Színész neve"
-                helperText="kötelezően megadandó adat"
-                color="primary"
-                required
-                name="name"
-                value={actor.name}
-                onChange={handleChange}
-              />
-              <TextField
-                multiline
-                label="Leírás"
-                color="primary"
-                name="description"
-                value={actor.description}
-                onChange={handleChange}
-              />
-              <TextField
-                multiline
-                label="Fénykép"
-                color="primary"
-                name="picture"
-                value={actor.picture}
-                onChange={handleChange}
-              />
-            </FormControl>
+      <>
+        <Box
+          component="form"
+          sx={{
+            "& > :not(style)": { m: 1, width: "80ch" },
 
-            <FormControlLabel
-              control={<Checkbox checked={checked} onChange={handleCheck} />}
-              label="Aktív tag"
-            ></FormControlLabel>
-            <ButtonGroup>
-              <Button
-                sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={saveActor}
-                variant="contained"
-                color="success"
-              >
-                Mentés
-              </Button>
-              <Button
-                sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={handleNew}
-                variant="contained"
-                color="primary"
-              >
-                Új színész
-              </Button>
-              <Button
-                sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={(e) => {
-                  navigate("/backpf");
-                }}
-                variant="contained"
-                color="info"
-              >
-                Vissza
-              </Button>
-            </ButtonGroup>
-            <h2>Új díj rögzítése:</h2>
-            <FormControl>
-              <InputLabel id="selectedActor_label">Színész neve:</InputLabel>
-              <Select
-                labelId="selectedActor_label"
-                id="selectedActor"
-                value={selectedActor}
-                label="Színész neve:"
-                onChange={(e) => setSelectedActor(e.target.value)}
-              >
-                {actorSelect.map((a) => (
-                  <MenuItem key={a._id} value={a.name}>
-                    {a.name}
-                  </MenuItem>
-                ))}
-              </Select>
+            backgroundColor: "lightgray",
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <FormControl variant="filled">
+            <TextField
+              label="Helyszín neve"
+              helperText="kötelezően megadandó adat"
+              color="primary"
+              required
+              name="name"
+              value={place.name}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Rövid név"
+              color="primary"
+              name="shortName"
+              value={place.shortName}
+              onChange={handleChange}
+            />
+            <TextField
+              sx={{ width: "150px" }}
+              label="Irányítószám"
+              type="number"
+              color="primary"
+              name="zip"
+              value={place.zip}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Település"
+              color="primary"
+              name="city"
+              value={place.city}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Cím (utca, házszám)"
+              placeholder="Kiss Lajos utca 12."
+              color="primary"
+              name="street"
+              value={place.street}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Email"
+              placeholder="minta.janos@gmail.com"
+              color="primary"
+              name="email"
+              value={place.email}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Vezetékes telefonszám"
+              placeholder="12345678"
+              color="primary"
+              name="phone"
+              value={place.phone}
+              onChange={handleChange}
+            />
+            <TextField
+              label="Mobil telefonszám"
+              placeholder="201234567"
+              color="primary"
+              name="mobile"
+              value={place.mobile}
+              onChange={handleChange}
+            />
+            <TextField
+              multiline
+              label="Honlap"
+              color="primary"
+              name="website"
+              value={place.website}
+              onChange={handleChange}
+            />
+            <TextField
+              multiline
+              label="Leírás"
+              color="primary"
+              name="description"
+              value={place.description}
+              onChange={handleChange}
+            />
+            <TextField
+              multiline
+              label="Fénykép"
+              color="primary"
+              name="picture"
+              value={place.picture}
+              onChange={handleChange}
+            />
+          </FormControl>
 
-              <TextField
-                label="Díj megnevezése"
-                color="primary"
-                name="award_title"
-                value={actor.award_title}
-                onChange={handleChange}
-              />
-              <TextField
-                inputProps={{ inputMode: "numeric", pattern: "d.{4}" }}
-                label="Díj elnyerésének éve"
-                color="primary"
-                name="award_year"
-                value={actor.award_year}
-                onChange={handleChange}
-              />
-              <div>{awardMessage}</div>
-              <Button
-                sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={saveNewAward}
-                variant="contained"
-                color="primary"
-                disabled={!actorId ? true : false}
-              >
-                Új díj
-              </Button>
-            </FormControl>
-          </Box>
-          <Box>{actorId && <Awards name={selectedActor} id={actorId} />}</Box>
-          <Box
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "80ch" },
-
-              backgroundColor: "lightgray",
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <h2>Új szerep rögzítése:</h2>
-            <FormControl>
-              <InputLabel id="selectedActor_label">Színész neve:</InputLabel>
-              <Select
-                labelId="selectedActor_label"
-                id="selectedActor"
-                value={selectedActor}
-                label="Színész neve:"
-                onChange={(e) => setSelectedActor(e.target.value)}
-              >
-                {actorSelect.map((a) => (
-                  <MenuItem key={a._id} value={a.name}>
-                    {a.name}
-                  </MenuItem>
-                ))}
-              </Select>
-              <TextField
-                label="Színdarab"
-                color="primary"
-                name="role_title"
-                value={actor.role_title}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Szerep"
-                color="primary"
-                name="role_role"
-                value={actor.role_role}
-                onChange={handleChange}
-              />
-              <Button
-                sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={saveNewRole}
-                variant="contained"
-                color="primary"
-                disabled={!actorId ? true : false}
-              >
-                Új szerep
-              </Button>
-            </FormControl>
-          </Box>
-        </>
-      )}
+          <FormControlLabel
+            control={<Checkbox checked={checked} onChange={handleCheck} />}
+            label="Parkoló van a közelben"
+          ></FormControlLabel>
+          <ButtonGroup>
+            <Button
+              sx={{ maxWidth: "120px", m: "10px" }}
+              onClick={savePlace}
+              variant="contained"
+              color="success"
+            >
+              Mentés
+            </Button>
+            <Button
+              sx={{ maxWidth: "120px", m: "10px" }}
+              onClick={handleNew}
+              variant="contained"
+              color="primary"
+            >
+              Új helyszí
+            </Button>
+            <Button
+              sx={{ maxWidth: "120px", m: "10px" }}
+              onClick={(e) => {
+                navigate("/backpf");
+              }}
+              variant="contained"
+              color="info"
+            >
+              Vissza
+            </Button>
+          </ButtonGroup>
+        </Box>
+        <Box>
+          <h2>Mentett helyszínek</h2>
+        </Box>
+      </>
     </>
   );
 }

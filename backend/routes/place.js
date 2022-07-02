@@ -42,8 +42,9 @@ router.post("/", auth({ block: true }), async (req, res) => {
     if (!newPlace) return res.status(500).json("Adatbázis hiba");
   }
   if (id) {
+    console.log(id);
     const existingPlace = await Place.findOneAndUpdate(
-      { id: id },
+      { _id: id },
       {
         name: name,
         shortName: shortName,
@@ -54,10 +55,22 @@ router.post("/", auth({ block: true }), async (req, res) => {
         phone: phone,
         mobile: mobile,
         website: website,
+        picture: picture,
+        description: description,
+        isParking: isParking,
       }
     );
-    // console.log(existingPlace);
+    console.log(existingPlace, id);
   }
+  const allPlace = await Place.find({});
+  res.status(200).json(allPlace);
+});
+
+router.post("/delete", auth({ block: true }), async (req, res) => {
+  if (req.body.id) return res.status(400).json("Válassz egy helyszínt");
+  Place.findOneAndDelete({
+    _id: req.body.id,
+  }).exec();
   const allPlace = await Place.find({});
   res.status(200).json(allPlace);
 });
