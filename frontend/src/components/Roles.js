@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../providers/auth";
 import { toDoApi } from "../api/toDoApi";
 
 import Role from "./Role";
 
 function Roles({ isAdd, title, name, role }) {
-  const { token, user } = useAuth();
   const { get, post } = toDoApi();
   const [roles, setRoles] = useState([]);
   const [pfId, setPfId] = useState("");

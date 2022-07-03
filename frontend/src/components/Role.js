@@ -6,7 +6,7 @@ function Role({ r, title, pfId }) {
   const { get, post } = toDoApi();
   const [isUpdate, setIsUpdate] = useState(false);
 
-  const [isError, setIsError] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [message, setMessage] = useState("");
   const [newName, setNewName] = useState(r.name);
   const [newRole, setNewRole] = useState(r.role);
@@ -16,15 +16,15 @@ function Role({ r, title, pfId }) {
   };
 
   const saveRole = async () => {
+    setMessage("");
     const responseRole = await post("/performance/actor/modify", {
       actorId: r._id,
       name: newName,
       role: newRole,
     });
-    console.log("responseRole", responseRole?.data, responseRole?.statusText);
+    // console.log("responseRole", responseRole?.data, responseRole?.statusText);
     if (responseRole?.status === 400) {
-      setIsError(true);
-      setMessage(responseRole.statusText);
+      setMessage(responseRole.data);
     } else {
       setIsUpdate(false);
     }
@@ -35,13 +35,11 @@ function Role({ r, title, pfId }) {
       performanceId: pfId,
       actorId: r._id,
     });
-    console.log("responseDeleteRole status:", responseDeleteRole);
-    setIsUpdate(false);
+    //   console.log("responseDeleteRole status:", responseDeleteRole);
+    setIsDelete(!isDelete);
   };
 
-  useEffect(() => {
-    // console.log(r);
-  }, [isUpdate]);
+  useEffect(() => {}, [isUpdate, isDelete]);
 
   return (
     <div
@@ -57,7 +55,7 @@ function Role({ r, title, pfId }) {
         //     "& .MuiTextField-root": { m: 1, width: "25ch" },
         //   }}
         >
-          {isError && <div>{message}</div>}
+          {message && <div>{message}</div>}
           <TextField
             size="small"
             label="Neve:"

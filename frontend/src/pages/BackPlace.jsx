@@ -14,6 +14,7 @@ import {
   ButtonGroup,
 } from "@mui/material";
 import Awards from "../components/Awards";
+import SavedPlaces from "../components/SavedPlaces";
 
 function BackPlace() {
   const { post, get } = toDoApi();
@@ -37,6 +38,7 @@ function BackPlace() {
   const [placeId, setPlaceId] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState("");
   const [placeSelect, setPlaceSelect] = useState([]);
+  const [isAdd, setIsAdd] = useState(false);
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
@@ -67,28 +69,27 @@ function BackPlace() {
   };
 
   const savePlace = async () => {
-    console.log("id", placeId);
-    //   const responsePlace = await post("/place", {
-    //       id: placeId ? placeId : null,
-    //       name: place.name,
-    //       shortName: place.shortName,
-    //       zip: place.zip,
-    //       city: place.city,
-    //       street: place.street,
-    //       email: place.email,
-    //       phone: place.phone,
-    //       mobile: place.mobile,
-    //       website: place.website,
-    //       picture: place.picture,
-    //       description: place.description,
-    //       isParking: place.isParking,
-    //     });
-    //     console.log("resposne", responsePlace);
-    // if (responsePlace) setPlaceSelect(responsePlace.data);
+    const responsePlace = await post("/place", {
+      id: placeId ? placeId : null,
+      name: place.name,
+      shortName: place.shortName,
+      zip: place.zip,
+      city: place.city,
+      street: place.street,
+      email: place.email,
+      phone: place.phone,
+      mobile: place.mobile,
+      website: place.website,
+      picture: place.picture,
+      description: place.description,
+      isParking: place.isParking,
+    });
+    setIsAdd(!isAdd);
   };
+
   useEffect(() => {
     getPlaces();
-  }, [placeSelect, selectedPlace, place]);
+  }, [placeSelect, selectedPlace, place, isAdd]);
 
   return (
     <>
@@ -210,12 +211,12 @@ function BackPlace() {
               Mentés
             </Button>
             <Button
-              sx={{ maxWidth: "120px", m: "10px" }}
+              sx={{ maxWidth: "130px", m: "10px" }}
               onClick={handleNew}
               variant="contained"
               color="primary"
             >
-              Új helyszí
+              Új helyszín
             </Button>
             <Button
               sx={{ maxWidth: "120px", m: "10px" }}
@@ -231,6 +232,7 @@ function BackPlace() {
         </Box>
         <Box>
           <h2>Mentett helyszínek</h2>
+          <SavedPlaces isAdd={isAdd} setIsAdd={setIsAdd} />
         </Box>
       </>
     </>

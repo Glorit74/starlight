@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import Roles from "../components/Roles";
 import PlaceHolder from "../components/PlaceHolder";
-import Selection from "../api/Selection";
 import { useNavigate } from "react-router-dom";
 
 function BackPf() {
@@ -96,18 +95,9 @@ function BackPf() {
 
   return (
     <div>
-      <Selection endpoint="place" label="Helyszín" />
       <h2>Előadások:</h2>
       {token && (
         <>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<AddCircleOutlineIcon />}
-            onClick={createNewPerformance}
-          >
-            ÚJ
-          </Button>
           <Box
             component="form"
             sx={{
@@ -222,6 +212,15 @@ function BackPf() {
               />
             </FormControl>
             <div className="message">{message}</div>
+            <Button
+              variant="contained"
+              size="medium"
+              color="success"
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={createNewPerformance}
+            >
+              Mentés
+            </Button>
           </Box>
           <h2>Színész hozzáadása:</h2>
           <Box
@@ -263,7 +262,7 @@ function BackPf() {
                     </MenuItem>
                   ))}
                 </Select>
-                <Button onClick={(e) => navigate("/backplace")}>
+                <Button onClick={(e) => navigate("/backactor")}>
                   Új színész
                 </Button>
               </FormControl>

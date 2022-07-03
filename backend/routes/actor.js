@@ -73,12 +73,21 @@ router.post("/awards/modify", auth({ block: true }), async (req, res) => {
 
   const actor = await Actor.findOne({ "awards._id": awardId });
   if (!actor) return res.status(400).json("Nincs ilyen elmentett színész");
-  actor.awards.map((a) => {
-    if (a._id == awardId) {
-      (a.title = title), (a.year = year);
-    }
+  const existingAward = await Actor.find({
+    "awards._id": awardId,
+    "awards.title": title,
+    "awards.year": year,
   });
-  await actor.save();
+  if (existingAward.length)
+    return res.status(400).json("Ilyen díj már van mentve");
+  else {
+    actor.awards.map((a) => {
+      if (a._id == awardId) {
+        (a.title = title), (a.year = year);
+      }
+    });
+    await actor.save();
+  }
   if (!actor) return res.status(500).json("Hiba");
   const allActor = await Actor.find({});
   res.status(200).json("allActor");

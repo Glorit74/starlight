@@ -33,7 +33,7 @@ function Award({ title, year, awardId }) {
     title: title,
     year: year,
   });
-  const [myAwardId, setmyAwardId] = useState(awardId);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setNewAward((prevText) => {
@@ -45,59 +45,65 @@ function Award({ title, year, awardId }) {
   };
 
   const saveAward = async () => {
+    setMessage("");
     const responseSave = await post("actor/awards/modify", {
       awardId: awardId,
       title: newAward.title,
       year: newAward.year,
     });
-    console.log("save", responseSave);
-    // if (responseSave?.status === 400) {
-    //   setMessage(responseSave.statusText);
-    // } else {
-    // setIsUpdate(true);
-    // }
+    if (responseSave?.status === 400) {
+      setMessage(responseSave.data);
+    }
+    setIsUpdate(!isUpdate);
   };
 
   const deleteAward = async () => {
-    console.log("delete st", awardId);
+    // console.log("delete st", awardId);
     const responseDelete = await post(
       `actor/awards/delete/?awardId=${awardId}`
     );
-    console.log("delete", responseDelete);
+    // console.log("delete", responseDelete);
   };
 
-  useEffect(() => {}, [myAwardId]);
+  useEffect(() => {}, [message]);
 
   return (
     <>
       {isUpdate ? (
-        <StyledTableRow
-          key={awardId}
-          sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-        >
-          <StyledTableCell>{newAward.title}</StyledTableCell>
-          <StyledTableCell>{newAward.year}</StyledTableCell>
-          <StyledTableCell>
-            <ButtonGroup>
-              <Button
-                size="small"
-                variant="contained"
-                color="warning"
-                onClick={updateAward}
-              >
-                Módosítás
-              </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="error"
-                onClick={deleteAward}
-              >
-                Törlés
-              </Button>
-            </ButtonGroup>
-          </StyledTableCell>
-        </StyledTableRow>
+        <>
+          <StyledTableRow
+            key={awardId}
+            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+          >
+            <StyledTableCell>{newAward.title}</StyledTableCell>
+            <StyledTableCell>{newAward.year}</StyledTableCell>
+            <StyledTableCell>
+              <ButtonGroup>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="warning"
+                  onClick={updateAward}
+                >
+                  Módosítás
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="error"
+                  onClick={deleteAward}
+                >
+                  Törlés
+                </Button>
+              </ButtonGroup>
+            </StyledTableCell>
+          </StyledTableRow>
+          {message && (
+            <StyledTableRow>
+              <StyledTableCell colSpan={3}>{message}</StyledTableCell>
+            </StyledTableRow>
+          )}
+        </>
       ) : (
         <StyledTableRow
           key={awardId}

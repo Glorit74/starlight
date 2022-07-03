@@ -155,15 +155,20 @@ router.post("/actor/delete", auth({ block: true }), async (req, res) => {
       },
     },
     { new: true }
-  )
-    .then((pf) => {
-      //   console.log(pf);
-      res.status(200).json(pf);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(400);
-    });
+  );
+  if (!pf) return res.status(400).json("Adatbázik hiba");
+  else {
+    const allPf = await Performace.find({});
+    return res.status(200).json(allPf);
+  }
+  // .then((pf) => {
+
+  //   res.status(200).json(pf);
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  //   res.sendStatus(400);
+  // });
 });
 
 module.exports = router;

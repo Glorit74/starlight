@@ -71,9 +71,7 @@ function Place({ place, pfId }) {
     setIsUpdate(true);
   };
 
-  useEffect(() => {
-    // console.log(place);
-  }, [isUpdate]);
+  useEffect(() => {}, [isUpdate]);
   return (
     <>
       {isUpdate ? (
