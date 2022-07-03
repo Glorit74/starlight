@@ -96,19 +96,6 @@ function BackActor() {
     }
   };
 
-  const saveNewRole = async () => {
-    let filteredActor = actorSelect.filter((a) => a.name === selectedActor);
-    setActorId(filteredActor[0]._id);
-    const responseRole = await post("actor/role", {
-      name: selectedActor,
-      title: actor.role_title,
-      role: actor.role_role,
-      id: actorId,
-    });
-    if (responseRole.status === 400) setRoleMessage(responseRole.date);
-    else setRoleMessage("Mentés sikeresen megtörtént");
-  };
-
   useEffect(() => {
     getActors();
   }, [actorSelect, selectedActor]);
@@ -242,48 +229,7 @@ function BackActor() {
             }}
             noValidate
             autoComplete="off"
-          >
-            <h2>Új szerep rögzítése:</h2>
-            <FormControl>
-              <InputLabel id="selectedActor_label">Színész neve:</InputLabel>
-              <Select
-                labelId="selectedActor_label"
-                id="selectedActor"
-                value={selectedActor}
-                label="Színész neve:"
-                onChange={(e) => setSelectedActor(e.target.value)}
-              >
-                {actorSelect.map((a) => (
-                  <MenuItem key={a._id} value={a.name}>
-                    {a.name}
-                  </MenuItem>
-                ))}
-              </Select>
-              <TextField
-                label="Színdarab"
-                color="primary"
-                name="role_title"
-                value={actor.role_title}
-                onChange={handleChange}
-              />
-              <TextField
-                label="Szerep"
-                color="primary"
-                name="role_role"
-                value={actor.role_role}
-                onChange={handleChange}
-              />
-              <Button
-                sx={{ maxWidth: "120px", m: "10px" }}
-                onClick={saveNewRole}
-                variant="contained"
-                color="primary"
-                disabled={!actorId ? true : false}
-              >
-                Új szerep
-              </Button>
-            </FormControl>
-          </Box>
+          ></Box>
         </>
       )}
     </>

@@ -282,12 +282,9 @@ function BackPf() {
               </Button>
             </FormGroup>
           </Box>
-          <Roles
-            isAdd={isAdd}
-            title={selectedPf}
-            role={actorRole}
-            name={selectedActor}
-          />
+          <Box>
+            <Roles pf={performanceSelect} title={selectedPf} />
+          </Box>
           <PlaceHolder />
         </>
       )}

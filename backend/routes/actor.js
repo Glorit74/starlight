@@ -102,15 +102,15 @@ router.post("/awards/delete", auth({ block: true }), async (req, res) => {
       },
     },
     { new: true }
-  )
-    .then((award) => console.log(award))
-    .catch((err) => console.log(err));
+  ).exec();
+  // .then((award) => console.log(award))
+  // .catch((err) => console.log(err));
   const allActor = await Actor.find({});
   res.status(200).json("allActor");
 });
 
 router.post("/role", auth({ block: true }), async (req, res) => {
-  const { name, title, role, id } = req.body;
+  const { title, role, id } = req.body;
   const newRole = { title: title, role: role };
   // only in DB existed actor can have roles
   if (!id) return res.status(400).json([]);
@@ -120,20 +120,22 @@ router.post("/role", auth({ block: true }), async (req, res) => {
   if (!actor) return res.status(400).json([]);
 
   const existingRole = await Actor.find({
-    _id: id,
+    "._": id,
     "roles.title": title,
     "roles.role": role,
     // in one pf can be more roles
   });
-  if (!existingRole.length) {
+  if (existingRole.length) return res.status(400).json("Ez már mentve van");
+  else {
     actor.roles.push(newRole);
     await actor.save();
-    res.status(200).json(actor);
-  } else return res.status(400).json(existingRole);
+    const allActor = await Actor.find({});
+    return res.status(200).json(allActor);
+  }
 });
 
 router.delete("/delete/:id", auth({ block: true }), async (req, res) => {
-  console.log(req.params);
+  //   console.log(req.params);
   //   res.send("Got a DELETE request at /user");
   Actor.findOneAndDelete({
     _id: req.params.id,
@@ -143,22 +145,22 @@ router.delete("/delete/:id", auth({ block: true }), async (req, res) => {
   });
 });
 
-router.delete("/role/delete", auth({ block: true }), async (req, res) => {
-  const { actorId, roleId } = req.body;
+// router.delete("/role/delete", auth({ block: true }), async (req, res) => {
+//   const { actorId, roleId } = req.body;
 
-  const actor = await Actor.findOneAndUpdate(
-    { _id: actorId },
-    {
-      $pull: {
-        roles: { _id: roleId },
-      },
-    },
-    { new: true }
-  )
-    .then((role) => console.log(role))
-    .catch((err) => console.log(err));
+//   const actor = await Actor.findOneAndUpdate(
+//     { _id: actorId },
+//     {
+//       $pull: {
+//         roles: { _id: roleId },
+//       },
+//     },
+//     { new: true }
+//   ).exec();
+//   // .then((role) => /* console.log(role) */)
+//   // .catch((err) => console.log(err));
 
-  res.sendStatus(200);
-});
+//   res.sendStatus(200);
+// });
 
 module.exports = router;

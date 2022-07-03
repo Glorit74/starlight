@@ -129,19 +129,19 @@ router.post("/actor", auth({ block: true }), async (req, res) => {
 });
 
 router.post("/actor/modify", auth({ block: true }), async (req, res) => {
-  const { name, role, actorId } = req.body;
-  if (!actorId) return res.status(400).json("Adat hiányzik");
+  const { name, role, id } = req.body;
+  if (!id) return res.status(400).json("Adat hiányzik");
 
-  const Pf = await Performance.findOne({ "actor._id": actorId }, "actor");
-  Pf.actor.map((p) => {
-    if (p._id == actorId) {
+  const pf = await Performance.findOne({ "actor._id": id }, "actor");
+  pf.actor.map((p) => {
+    if (p._id == id) {
       p.role = role;
       p.name = name;
     }
   });
-  await Pf.save();
-  if (!Pf) return res.status(500).json("Hiba");
-  res.status(200).json(Pf);
+  await pf.save();
+  if (!pf) return res.status(500).json("Hiba");
+  res.status(200).json(pf);
 });
 
 router.post("/actor/delete", auth({ block: true }), async (req, res) => {
@@ -156,19 +156,31 @@ router.post("/actor/delete", auth({ block: true }), async (req, res) => {
     },
     { new: true }
   );
-  if (!pf) return res.status(400).json("Adatbázik hiba");
+  if (!pf) return res.status(400).json("Adatbázis hiba");
   else {
-    const allPf = await Performace.find({});
+    const allPf = await Performance.find({});
     return res.status(200).json(allPf);
   }
-  // .then((pf) => {
+});
 
-  //   res.status(200).json(pf);
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  //   res.sendStatus(400);
-  // });
+router.post("/role/delete", auth({ block: true }), async (req, res) => {
+  if (!req.query.id) return res.status(400).json("Adat hiányzik");
+  const pf = await Performance.findOneAndUpdate(
+    { "actor._id": req.query.id },
+    {
+      $pull: {
+        actor: { _id: req.query.id },
+      },
+    },
+    { new: true }
+  ).exec();
+  if (!pf)
+    return res.status(400).json("Nincs ilyen mentett szerep az adatbázisban");
+  const allPerformance = await Performance.find(
+    { title: req.query.title },
+    "actor"
+  );
+  return res.status(200).json(allPerformance);
 });
 
 module.exports = router;

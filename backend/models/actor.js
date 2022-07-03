@@ -10,12 +10,6 @@ const actorSchema = new mongoose.Schema({
     },
   ],
   picture: String,
-  roles: [
-    {
-      title: String,
-      role: String,
-    },
-  ],
   isActive: { type: Boolean, default: true },
 });
 

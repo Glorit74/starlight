@@ -31,7 +31,7 @@ function Awards({ id }) {
     const filteredActor = await responseActor?.data.filter(
       (actor) => actor._id === id
     );
-    setAwards(filteredActor[0].awards);
+    setAwards(filteredActor[0]?.awards);
   };
 
   useEffect(() => {
