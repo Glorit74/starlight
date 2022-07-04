@@ -6,10 +6,9 @@ const auth = require("../middlewares/auth");
 const { Error } = require("mongoose");
 
 router.get("/", async (req, res) => {
-  const performance = await Performance.find({}, "title venue").sort({
-    "venue.date": 1,
+  const performance = await Performance.find({}).sort({
+    title: "asc",
   });
-  // .exec();
 
   if (!performance) return res.status(404).json([]);
   res.json(performance);
