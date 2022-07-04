@@ -1,7 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;700&family=Overpass:wght@300&display=swap");
+
+$tablet: 600px;
+$desktop: 900px;
+
+$gray: #4e4e50;
+$braun: #6f2232;
+$burgundy: #950740;
+$orange: #ca6e19;
+$light: #ecdce1;
+$dark: #1a1a1d;
+
+@mixin tablet {
+  @media (min-width: #{$tablet}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop}) {
+    @content;
+  }
+}
 .App {
   text-align: center;
   font-family: "Inknut Antiqua", serif;
 }
-/*# sourceMappingURL=App.css.map */

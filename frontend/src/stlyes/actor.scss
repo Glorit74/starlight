@@ -1,0 +1,64 @@
+@use "./basic.scss";
+
+article {
+  position: relative;
+  display: flex;
+  .actor_up {
+    justify-content: start;
+  }
+  .actor_down {
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.actor_figure {
+  position: relative;
+  width: 240px;
+  height: 300px;
+  margin: 10px;
+  padding: 10px 5px 65px;
+  border: 1px solid black;
+}
+
+.actor_figure_up {
+  &::before {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin-top: 8px;
+    content: "művészeti vezető";
+    width: calc(240px - 2px);
+    height: 30px;
+    background-color: #ca6e19;
+    color: white;
+    font-size: 11px;
+  }
+}
+
+.actor_figure_up {
+  &::hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    content: "";
+    width: 238px;
+    height: 30px;
+    background-color: #ca6e19;
+    color: white;
+    font-size: 11px;
+  }
+}
+
+.actor_caption {
+  font-size: 14px;
+  color: #6f2232;
+}
+
+img {
+  display: block;
+  margin: auto;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
