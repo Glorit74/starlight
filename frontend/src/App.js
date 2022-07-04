@@ -15,6 +15,7 @@ import BackActor from "./pages/BackActor";
 import BackPlace from "./pages/BackPlace";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </div>
   );
 }

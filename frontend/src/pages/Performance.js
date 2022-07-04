@@ -14,7 +14,8 @@ function Performance() {
   const id = "62af3bb24dd95fb9ef8f9202";
   const getPerformance = async () => {
     const responsePf = await get("/performance");
-    setPf((responsePf?.data.filter((pf) => pf._id === id))[0]);
+
+    setPf(responsePf.data.filter((pf) => pf._id === id)[0]);
   };
 
   useEffect((e) => {
@@ -22,56 +23,56 @@ function Performance() {
     // eslint-disable-next-line
   }, []);
   return (
-    <div style={{ display: "flex", flexWrap: "nowrap" }}>
-      {/* <button onClick={(e) => console.log("eredmény", pf)}>Get PF</button> */}
-
-      <div style={divStyle}>
-        <div>
-          <img src={pf.picture} alt=""></img>
-        </div>
-        <Header style={{ textAlign: "right" }}>Szereplők</Header>
-        {pf.actor.map((a) => (
-          <div
-            key={a._id}
-            style={{
-              display: "flex",
-              justifyContent: "end",
-              alignItems: "center",
-            }}
-          >
-            <div>{a.role}</div> <Name>- {a.name}</Name>
-          </div>
-        ))}
-      </div>
-      <div style={divStyle}>
-        <div>{pf.author}</div>
-        <Header>{pf.title}</Header>
-        <div>{pf.subtitle}</div>
-        <div>
-          {pf.duration} perc, {pf.act} felvonásban{" "}
-        </div>
-        <div style={{ textAlign: "justify", padding: "0px 10px" }}>
-          {pf.description}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-Start",
-          }}
-        >
-          <div>
-            <Header_small>Rendező: </Header_small> {pf.director}
-          </div>
-          <div>
-            <Header_small>Zene: </Header_small> {pf.music}
-          </div>
-          <div>
-            <Header_small>Koreográfia: </Header_small> {pf.choregrapher}
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      {/* 	<div style={{ display: "flex", flexWrap: "nowrap" }}>
+			  <div style={divStyle}>
+				<div>
+				  <img src={pf.picture} alt=""></img>
+				</div>
+				<Header style={{ textAlign: "right" }}>Szereplők</Header>
+				{pf.actor.map((a) => (
+				  <div
+					key={a._id}
+					style={{
+					  display: "flex",
+					  justifyContent: "end",
+					  alignItems: "center",
+					}}
+				  >
+					<div>{a.role}</div> <Name>- {a.name}</Name>
+				  </div>
+				))}
+			  </div>
+			  <div style={divStyle}>
+				<div>{pf.author}</div>
+				<Header>{pf.title}</Header>
+				<div>{pf.subtitle}</div>
+				<div>
+				  {pf.duration} perc, {pf.act} felvonásban{" "}
+				</div>
+				<div style={{ textAlign: "justify", padding: "0px 10px" }}>
+				  {pf.description}
+				</div>
+				<div
+				  style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "flex-Start",
+				  }}
+				>
+				  <div>
+					<Header_small>Rendező: </Header_small> {pf.director}
+				  </div>
+				  <div>
+					<Header_small>Zene: </Header_small> {pf.music}
+				  </div>
+				  <div>
+					<Header_small>Koreográfia: </Header_small> {pf.choregrapher}
+				  </div>
+				</div>
+			  </div>
+			</div> */}
+    </>
   );
 }
 
@@ -93,10 +94,10 @@ const Name = styled.h2`
   font-size: 16px;
   font-weight: 400;
   text-align: left;
-   &:hover {
-    color: #ca6e19;
-	cursor: pointer;
 `;
+//    &:hover {
+//     color: #ca6e19;
+// 	cursor: pointer;
 
 const Header_small = styled.h3`
   display: inline;

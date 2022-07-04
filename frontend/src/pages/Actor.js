@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { toDoApi } from "../api/toDoApi";
 import "../stlyes/actor.scss";
-import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
 
 function Actor() {
   const { get } = toDoApi();
-  const navigate = useNavigate();
 
   const [actors, setActors] = useState([]);
   const [performance, setPf] = useState([]);
