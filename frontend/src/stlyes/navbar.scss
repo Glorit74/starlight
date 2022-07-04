@@ -1,0 +1,30 @@
+$gray: #4e4e50;
+$braun: #6f2232;
+$burgundy: #950740;
+$orange: #ca6e19;
+$light: #ecdce1;
+$dark: #1a1a1d;
+
+.link {
+  //   position: relative;
+  //   text-transform: uppercase;
+  //   padding: 22px;
+  //   height: 70px;
+  //   color: $dark;
+  position: relative;
+  top: -7px;
+  text-transform: uppercase;
+  padding: 14px 5px;
+  color: $dark;
+  &:hover {
+    background-color: #ca6e19;
+    color: #ecdce1;
+    border: #ca6e19 1px solid;
+  }
+}
+
+.button {
+  position: relative;
+  padding: 25px 5px;
+  height: 65px;
+}

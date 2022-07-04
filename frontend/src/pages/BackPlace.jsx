@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   ButtonGroup,
 } from "@mui/material";
-import Awards from "../components/Awards";
+
 import SavedPlaces from "../components/SavedPlaces";
 
 function BackPlace() {

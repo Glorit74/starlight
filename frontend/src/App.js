@@ -15,7 +15,6 @@ import BackActor from "./pages/BackActor";
 import BackPlace from "./pages/BackPlace";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ActorData from "./pages/ActorData";
 
 function App() {
   return (
@@ -27,7 +26,6 @@ function App() {
         <Route path="/performance" element={<Performance />} />
         <Route path="/place" element={<Place />} />
         <Route path="/actor" element={<Actor />} />
-        <Route path="/actordata" element={<ActorData />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
 
