@@ -1,0 +1,30 @@
+$tablet: 600px;
+$desktop: 900px;
+
+@mixin tablet {
+  @media (min-width: #{$tablet}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop}) {
+    @content;
+  }
+}
+
+#container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $primery;
+  color: $secondary;
+  padding: 80px 10px 20px;
+
+  @include desktop {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
